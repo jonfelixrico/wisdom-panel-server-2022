@@ -1,7 +1,7 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common'
+import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
-import { Response } from 'express'
+import { Request, Response } from 'express'
 
 @Controller('auth')
 export class AuthController {
@@ -15,7 +15,12 @@ export class AuthController {
 
   @UseGuards(AuthGuard('oauth2'))
   @Get('callback')
-  async oAuthCallback(@Res() res: Response) {
+  async oAuthCallback(
+    @Res() res: Response,
+    @Req() { user }: Request,
+    @Session() session: Record<string, unknown>,
+  ) {
+    session.user = user
     res.redirect(this.cfg.getOrThrow('URL'))
   }
 }
