@@ -13,6 +13,7 @@ specifiers:
   '@types/jest': 27.5.0
   '@types/node': ^16.0.0
   '@types/passport-discord': ^0.1.6
+  '@types/passport-oauth2': ^1.4.11
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
@@ -22,6 +23,7 @@ specifiers:
   jest: 28.0.3
   passport: ^0.6.0
   passport-discord: ^0.1.4
+  passport-oauth2: ^1.6.1
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
@@ -42,6 +44,7 @@ dependencies:
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   passport: 0.6.0
   passport-discord: 0.1.4
+  passport-oauth2: 1.6.1
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.7
@@ -54,6 +57,7 @@ devDependencies:
   '@types/jest': 27.5.0
   '@types/node': 16.11.68
   '@types/passport-discord': 0.1.6
+  '@types/passport-oauth2': 1.4.11
   '@types/supertest': 2.0.12
   '@typescript-eslint/eslint-plugin': 5.40.1_ukgdydjtebaxmxfqp5v5ulh64y
   '@typescript-eslint/parser': 5.40.1_z4bbprzjrhnsfa24uvmcbu7f5q
