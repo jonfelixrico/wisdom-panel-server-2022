@@ -7,8 +7,8 @@ import { Strategy, StrategyOptions } from 'passport-oauth2'
 export class DiscordStrategyService extends PassportStrategy(Strategy) {
   constructor(cfg: ConfigService) {
     super({
-      authorizationURL: cfg.getOrThrow('DISCORD_AUTHORIZATION_URL'),
-      tokenURL: cfg.getOrThrow('DISCORD_TOKEN_URL'),
+      authorizationURL: cfg.getOrThrow('DISCORD_OAUTH_AUTHORIZATION_URL'),
+      tokenURL: cfg.getOrThrow('DISCORD_OAUTH_TOKEN_URL'),
 
       clientID: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_ID'),
       clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
