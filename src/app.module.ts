@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { DiscordOauthModule } from './discord-oauth/discord-oauth.module'
 import { SessionGuard } from './guards/session.guard'
+import { SessionModule } from './session/session.module'
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { SessionGuard } from './guards/session.guard'
       envFilePath: ['.env', '.env.default'],
     }),
     DiscordOauthModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [
