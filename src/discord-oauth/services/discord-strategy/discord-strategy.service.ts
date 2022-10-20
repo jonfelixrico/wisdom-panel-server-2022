@@ -1,4 +1,19 @@
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { PassportStrategy } from '@nestjs/passport'
+import { Strategy, StrategyOptions } from 'passport-discord'
 
 @Injectable()
-export class DiscordStrategyService {}
+export class DiscordStrategyService extends PassportStrategy(Strategy) {
+  constructor(cfg: ConfigService) {
+    super({
+      clientID: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_ID'),
+      clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
+      callbackURL: cfg.getOrThrow('DISCORD_OAUTH_CALLBACK_URL'),
+      scope: cfg
+        .getOrThrow<string>('DISCORD_OAUTH_SCOPE')
+        .split(',')
+        .map((s) => s.trim()),
+    } as StrategyOptions)
+  }
+}
