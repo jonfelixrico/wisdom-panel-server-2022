@@ -12,7 +12,6 @@ specifiers:
   '@types/express': ^4.17.13
   '@types/jest': 27.5.0
   '@types/node': ^16.0.0
-  '@types/passport-discord': ^0.1.6
   '@types/passport-oauth2': ^1.4.11
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
@@ -23,7 +22,6 @@ specifiers:
   express-session: ^1.17.3
   jest: 28.0.3
   passport: ^0.6.0
-  passport-discord: ^0.1.4
   passport-oauth2: ^1.6.1
   prettier: ^2.3.2
   reflect-metadata: ^0.1.13
@@ -45,7 +43,6 @@ dependencies:
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   express-session: 1.17.3
   passport: 0.6.0
-  passport-discord: 0.1.4
   passport-oauth2: 1.6.1
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
@@ -58,7 +55,6 @@ devDependencies:
   '@types/express': 4.17.14
   '@types/jest': 27.5.0
   '@types/node': 16.11.68
-  '@types/passport-discord': 0.1.6
   '@types/passport-oauth2': 1.4.11
   '@types/supertest': 2.0.12
   '@typescript-eslint/eslint-plugin': 5.40.1_ukgdydjtebaxmxfqp5v5ulh64y
@@ -1228,14 +1224,6 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
-    dev: true
-
-  /@types/passport-discord/0.1.6:
-    resolution: {integrity: sha512-fB9JMzNDzx9ToIsd5fGYpYrwGmqhPhebyFFb3eFL3u5dY1R8K42pszAXSeCXTZxbf1WZpLsydTUNbciqmDkqCg==}
-    dependencies:
-      '@types/express': 4.17.14
-      '@types/passport': 1.0.11
-      '@types/passport-oauth2': 1.4.11
     dev: true
 
   /@types/passport-oauth2/1.4.11:
@@ -3997,12 +3985,6 @@ packages:
   /parseurl/1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
-
-  /passport-discord/0.1.4:
-    resolution: {integrity: sha512-VJWPYqSOmh7SaCLw/C+k1ZqCzJnn2frrmQRx1YrcPJ3MQ+Oa31XclbbmqFICSvl8xv3Fqd6YWQ4H4p1MpIN9rA==}
-    dependencies:
-      passport-oauth2: 1.6.1
-    dev: false
 
   /passport-oauth2/1.6.1:
     resolution: {integrity: sha512-ZbV43Hq9d/SBSYQ22GOiglFsjsD1YY/qdiptA+8ej+9C1dL1TVB+mBE5kDH/D4AJo50+2i8f4bx0vg4/yDDZCQ==}
