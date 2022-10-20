@@ -2,6 +2,7 @@ import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
 import { Request, Response } from 'express'
+import { DiscordOAuthTokens } from 'src/discord-oauth/types'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 
 @Controller('auth')
@@ -21,9 +22,9 @@ export class AuthController {
   async oAuthCallback(
     @Res() res: Response,
     @Req() { user }: Request,
-    @Session() session: Record<string, unknown>,
+    @Session() session: DiscordOAuthTokens,
   ) {
-    session.user = user
+    Object.assign(session, user)
     res.redirect(this.cfg.getOrThrow('URL'))
   }
 }

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { Request } from 'express'
 import { Observable } from 'rxjs'
+import { DiscordOAuthTokens } from 'src/discord-oauth/types'
 
 export const IS_PUBLIC = 'IS_PUBLIC'
 
@@ -21,7 +21,10 @@ export class SessionGuard implements CanActivate {
       return true
     }
 
-    const req: Request = context.switchToHttp().getRequest()
-    return req.isAuthenticated()
+    const req: { session: DiscordOAuthTokens } = context
+      .switchToHttp()
+      .getRequest()
+
+    return !!req?.session?.refreshToken
   }
 }
