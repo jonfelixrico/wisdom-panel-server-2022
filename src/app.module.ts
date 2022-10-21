@@ -4,7 +4,7 @@ import { APP_GUARD } from '@nestjs/core'
 import { DiscordOauthModule } from './discord-oauth/discord-oauth.module'
 import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
-import { UserDiscordDataModule } from './user-discord-data/user-discord-data.module'
+import { DiscordDataModule } from './discord-data/discord-data.module'
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { UserDiscordDataModule } from './user-discord-data/user-discord-data.mod
     }),
     DiscordOauthModule,
     SessionModule,
-    UserDiscordDataModule,
+    DiscordDataModule,
   ],
   controllers: [],
   providers: [

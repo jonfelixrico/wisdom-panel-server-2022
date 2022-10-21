@@ -4,4 +4,4 @@ import { UserController } from './controllers/user/user.controller'
 @Module({
   controllers: [UserController],
 })
-export class UserDiscordDataModule {}
+export class DiscordDataModule {}
