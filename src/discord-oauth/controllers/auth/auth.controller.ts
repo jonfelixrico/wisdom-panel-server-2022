@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
-import { stringify } from 'qs'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 
