@@ -2,15 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
+import { OAuth2Routes } from 'discord-api-types/v10'
 
 interface Params {
   clientId: string
   clientSecret: string
   callbackUrl: string
   scope: string
-
-  authorizationUrl: string
-  tokenUrl: string
 }
 
 interface AccessTokenResp {
@@ -44,16 +42,13 @@ export class OAuthHelperService {
         .split(',')
         .map((s) => s.trim())
         .join(' '),
-
-      authorizationUrl: cfg.getOrThrow('DISCORD_OAUTH_AUTHORIZATION_URL'),
-      tokenUrl: cfg.getOrThrow('DISCORD_OAUTH_TOKEN_URL'),
     }
   }
 
   generateAuthorizationUrl(state?: string): string {
-    const { authorizationUrl, clientId, callbackUrl, scope } = this.config
+    const { clientId, callbackUrl, scope } = this.config
 
-    const url = new URL(authorizationUrl)
+    const url = new URL(OAuth2Routes.authorizationURL)
     const sp = url.searchParams
     sp.append('client_id', clientId)
     sp.append('redirect_uri', callbackUrl)
@@ -68,10 +63,10 @@ export class OAuthHelperService {
   }
 
   async exchangeAccessCode(code: string): Promise<OAuthData> {
-    const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
+    const { clientId, clientSecret, scope, callbackUrl } = this.config
 
     const { data } = await this.http.post<AccessTokenResp>(
-      tokenUrl,
+      OAuth2Routes.tokenURL,
       stringify({
         grant_type: 'authorization_code',
         client_id: clientId,
