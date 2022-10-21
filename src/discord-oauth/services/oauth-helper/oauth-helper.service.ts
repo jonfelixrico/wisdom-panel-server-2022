@@ -45,7 +45,7 @@ export class OAuthHelperService {
     }
   }
 
-  generateUrl(state?: string): string {
+  generateAuthorizationUrl(state?: string): string {
     const { authorizationUrl, clientId, callbackUrl, scope } = this.config
 
     const url = new URL(authorizationUrl)
