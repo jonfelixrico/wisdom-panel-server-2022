@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from 'nestjs-http-promise'
+import { stringify } from 'qs'
 
 interface Params {
   clientId: string
@@ -68,16 +69,16 @@ export class OAuthHelperService {
 
   async exchangeAccessCode(code: string): Promise<AccessToken> {
     const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
+
     const { data } = await this.http.post<AccessTokenResp>(
       tokenUrl,
-      {
+      stringify({
         grant_type: 'authorization_code',
         client_id: clientId,
         client_secret: clientSecret,
-        scope,
         code,
         redirect_uri: callbackUrl,
-      },
+      }),
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
