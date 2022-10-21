@@ -62,7 +62,7 @@ export class OAuthHelperService {
     return url.toString()
   }
 
-  async exchangeAccessToken(code: string): Promise<AccessToken> {
+  async exchangeAccessCode(code: string): Promise<AccessToken> {
     const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
     const { data } = await this.http.post<AccessTokenResp>(
       tokenUrl,
