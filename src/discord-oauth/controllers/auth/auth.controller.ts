@@ -35,7 +35,12 @@ export class AuthController {
 
     const sp = url.searchParams
     for (const key in req.query) {
-      sp.append(key, stringify(req.query[key]))
+      const value = req.query[key]
+      if (typeof value === 'string') {
+        sp.append(key, value)
+      } else {
+        sp.append(key, JSON.stringify(value))
+      }
     }
 
     res.redirect(url.toString())
