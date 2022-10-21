@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { HttpService } from 'nestjs-http-promise'
 
 interface Params {
   clientId: string
@@ -11,11 +12,27 @@ interface Params {
   tokenUrl: string
 }
 
+interface AccessTokenResp {
+  access_token: string
+  token_type: string
+  expires_in: number
+  refresh_token: string
+  scope: string
+}
+
+export interface AccessToken {
+  accessToken: string
+  tokenType: string
+  expiresIn: number
+  refreshToken: string
+  scope: string
+}
+
 @Injectable()
 export class OAuthHelperService {
   private config: Params
 
-  constructor(cfg: ConfigService) {
+  constructor(cfg: ConfigService, private http: HttpService) {
     this.config = {
       clientId: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_ID'),
       clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
@@ -43,5 +60,34 @@ export class OAuthHelperService {
     }
 
     return url.toString()
+  }
+
+  async getAccessToken(code: string): Promise<AccessToken> {
+    const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
+    const { data } = await this.http.post<AccessTokenResp>(
+      tokenUrl,
+      {
+        grant_type: 'authorization_code',
+        client_id: clientId,
+        client_secret: clientSecret,
+        scope,
+        code,
+        redirect_uri: callbackUrl,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    )
+
+    const { access_token, expires_in, refresh_token, token_type } = data
+    return {
+      accessToken: access_token,
+      expiresIn: expires_in,
+      refreshToken: refresh_token,
+      scope,
+      tokenType: token_type,
+    }
   }
 }
