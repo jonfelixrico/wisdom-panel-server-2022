@@ -2,20 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
-import { OAuth2Routes } from 'discord-api-types/v10'
+import {
+  OAuth2Routes,
+  RESTPostOAuth2AccessTokenResult,
+} from 'discord-api-types/v10'
 
 interface Params {
   clientId: string
   clientSecret: string
   callbackUrl: string
-  scope: string
-}
-
-interface AccessTokenResp {
-  access_token: string
-  token_type: string
-  expires_in: number
-  refresh_token: string
   scope: string
 }
 
@@ -25,6 +20,19 @@ export interface OAuthData {
   expiresIn: number
   refreshToken: string
   scope: string
+}
+
+export function convertAccessTokenResponseToData(
+  data: RESTPostOAuth2AccessTokenResult,
+): OAuthData {
+  const { access_token, expires_in, refresh_token, token_type, scope } = data
+  return {
+    accessToken: access_token,
+    expiresIn: expires_in,
+    refreshToken: refresh_token,
+    scope,
+    tokenType: token_type,
+  }
 }
 
 @Injectable()
@@ -71,9 +79,9 @@ export class OAuthHelperService {
   }
 
   async exchangeAccessCode(code: string): Promise<OAuthData> {
-    const { clientId, clientSecret, scope, callbackUrl } = this.config
+    const { clientId, clientSecret, callbackUrl } = this.config
 
-    const { data } = await this.http.post<AccessTokenResp>(
+    const { data } = await this.http.post<RESTPostOAuth2AccessTokenResult>(
       OAuth2Routes.tokenURL,
       stringify({
         grant_type: 'authorization_code',
@@ -89,13 +97,6 @@ export class OAuthHelperService {
       },
     )
 
-    const { access_token, expires_in, refresh_token, token_type } = data
-    return {
-      accessToken: access_token,
-      expiresIn: expires_in,
-      refreshToken: refresh_token,
-      scope,
-      tokenType: token_type,
-    }
+    return convertAccessTokenResponseToData(data)
   }
 }
