@@ -13,6 +13,7 @@ specifiers:
   '@types/jest': 27.5.0
   '@types/node': ^16.0.0
   '@types/passport-oauth2': ^1.4.11
+  '@types/qs': ^6.9.7
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
@@ -25,6 +26,7 @@ specifiers:
   passport: ^0.6.0
   passport-oauth2: ^1.6.1
   prettier: ^2.3.2
+  qs: ^6.11.0
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
   rxjs: ^7.2.0
@@ -46,6 +48,7 @@ dependencies:
   nestjs-http-promise: 2.0.0_tqvmdvrjo4ghzq2yoilcfekhea
   passport: 0.6.0
   passport-oauth2: 1.6.1
+  qs: 6.11.0
   reflect-metadata: 0.1.13
   rimraf: 3.0.2
   rxjs: 7.5.7
@@ -58,6 +61,7 @@ devDependencies:
   '@types/jest': 27.5.0
   '@types/node': 16.11.68
   '@types/passport-oauth2': 1.4.11
+  '@types/qs': 6.9.7
   '@types/supertest': 2.0.12
   '@typescript-eslint/eslint-plugin': 5.40.1_ukgdydjtebaxmxfqp5v5ulh64y
   '@typescript-eslint/parser': 5.40.1_z4bbprzjrhnsfa24uvmcbu7f5q
@@ -4200,7 +4204,6 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
-    dev: true
 
   /qs/6.9.3:
     resolution: {integrity: sha512-EbZYNarm6138UKKq46tdx08Yo/q9ZhFoAXAI1meAFd2GtbRDhbZY2WQSICskT0c5q99aFzLG1D4nvTk9tqfXIw==}
