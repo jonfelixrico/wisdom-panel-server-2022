@@ -9,7 +9,7 @@ interface CodePayload {
   code: string
 }
 
-@Controller('auth')
+@Controller('auth/oauth/discord')
 export class AuthController {
   constructor(private helper: OAuthHelperService, private cfg: ConfigService) {}
 
@@ -29,7 +29,9 @@ export class AuthController {
   @PublicRoute()
   @Get('callback')
   async oauthCallback(@Res() res: Response, @Req() req: Request) {
-    const url = new URL(this.cfg.getOrThrow('URL'))
+    const url = new URL(
+      this.cfg.getOrThrow('DISCORD_OAUTH_FRONTEND_CALLBACK_URL'),
+    )
 
     const sp = url.searchParams
     for (const key in req.query) {
