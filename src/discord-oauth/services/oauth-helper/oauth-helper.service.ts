@@ -45,6 +45,14 @@ export class OAuthHelperService {
     }
   }
 
+  get clientConfig() {
+    const { clientId, clientSecret } = this.config
+    return {
+      clientId,
+      clientSecret,
+    }
+  }
+
   generateAuthorizationUrl(state?: string): string {
     const { clientId, callbackUrl, scope } = this.config
 

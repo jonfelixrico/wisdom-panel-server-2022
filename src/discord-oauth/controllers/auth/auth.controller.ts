@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
-import { OAuthSession } from 'src/discord-oauth/types'
+import { DiscordOAuthSessionData } from 'src/discord-oauth/types'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 
 interface CodePayload {
@@ -50,8 +50,9 @@ export class AuthController {
   @Post()
   async exchangeAccessCode(
     @Body() { code }: CodePayload,
-    @Session() session: OAuthSession,
+    @Session() session: DiscordOAuthSessionData,
   ) {
     session.oauthData = await this.helper.exchangeAccessCode(code)
+    session.oauthConfig = this.helper.clientConfig
   }
 }
