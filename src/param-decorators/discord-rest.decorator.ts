@@ -6,6 +6,7 @@ import {
   OAuth2Routes,
   RESTPostOAuth2RefreshTokenResult,
   RESTPostOAuth2RefreshTokenURLEncodedData,
+  RouteBases,
 } from 'discord-api-types/v10'
 import { stringify } from 'qs'
 import { convertAccessTokenResponseToData } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
@@ -23,6 +24,7 @@ export const DiscordRest = createParamDecorator(
       headers: {
         Authorization: `${session.oauthData.tokenType} ${session.oauthData.accessToken}`,
       },
+      baseURL: RouteBases.api,
     })
 
     const refreshTokenData: RESTPostOAuth2RefreshTokenURLEncodedData = {
