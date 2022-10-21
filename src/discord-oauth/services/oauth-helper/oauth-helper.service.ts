@@ -38,7 +38,11 @@ export class OAuthHelperService {
       clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
 
       callbackUrl: cfg.getOrThrow('DISCORD_OAUTH_CALLBACK_URL'),
-      scope: cfg.getOrThrow('DISCORD_OAUTH_SCOPE'),
+      scope: cfg
+        .getOrThrow<string>('DISCORD_OAUTH_SCOPE')
+        .split(',')
+        .map((s) => s.trim())
+        .join(' '),
 
       authorizationUrl: cfg.getOrThrow('DISCORD_OAUTH_AUTHORIZATION_URL'),
       tokenUrl: cfg.getOrThrow('DISCORD_OAUTH_TOKEN_URL'),
