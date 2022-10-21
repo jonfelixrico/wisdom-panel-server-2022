@@ -1,30 +1,37 @@
-import { Controller, Get, Req, Res, Session, UseGuards } from '@nestjs/common'
+import { Controller, Get, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AuthGuard } from '@nestjs/passport'
 import { Request, Response } from 'express'
-import { DiscordOAuthTokens } from 'src/discord-oauth/types'
+import { stringify } from 'qs'
+import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 
 @Controller('auth')
 export class AuthController {
-  constructor(private cfg: ConfigService) {}
+  constructor(private helper: OAuthHelperService, private cfg: ConfigService) {}
 
   @PublicRoute()
-  @UseGuards(AuthGuard('oauth2'))
   @Get()
-  async startOAuth() {
-    return
+  startOAuth(@Res() res: Response, @Req() req: Request) {
+    const query = req.query ?? {}
+
+    let stringified: string
+    if (Object.keys(query).length) {
+      stringified = JSON.stringify(query)
+    }
+
+    res.redirect(this.helper.generateAuthorizationUrl(stringified))
   }
 
   @PublicRoute()
-  @UseGuards(AuthGuard('oauth2'))
   @Get('callback')
-  async oAuthCallback(
-    @Res() res: Response,
-    @Req() { user }: Request,
-    @Session() session: DiscordOAuthTokens,
-  ) {
-    Object.assign(session, user)
-    res.redirect(this.cfg.getOrThrow('URL'))
+  async oAuthCallback(@Res() res: Response, @Req() req: Request) {
+    const url = new URL(this.cfg.getOrThrow('URL'))
+
+    const sp = url.searchParams
+    for (const key in req.query) {
+      sp.append(key, stringify(req.query[key]))
+    }
+
+    res.redirect(url.toString())
   }
 }
