@@ -15,7 +15,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
-  axios: ^1.1.3
+  axios: 0.27.2
   axios-auth-refresh: ^3.3.4
   discord-api-types: ^0.37.14
   eslint: ^8.0.1
@@ -42,8 +42,8 @@ dependencies:
   '@nestjs/config': 2.2.0_bkbhg4knmtesqnnagm7a2p5cuy
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
-  axios: 1.1.3
-  axios-auth-refresh: 3.3.4_axios@1.1.3
+  axios: 0.27.2
+  axios-auth-refresh: 3.3.4_axios@0.27.2
   discord-api-types: 0.37.14
   express-session: 1.17.3
   nestjs-http-promise: 2.0.0_tqvmdvrjo4ghzq2yoilcfekhea
@@ -1657,12 +1657,12 @@ packages:
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  /axios-auth-refresh/3.3.4_axios@1.1.3:
+  /axios-auth-refresh/3.3.4_axios@0.27.2:
     resolution: {integrity: sha512-cGq3bZu+lip5j+byaQRZaZ3wpCUxs93jGV0614VYP5k2H1vbdoaw6HGazaUJxcRsFMctR3DItCAx1Dn7KerlcA==}
     peerDependencies:
       axios: '>= 0.18 < 0.19.0 || >= 0.19.1'
     dependencies:
-      axios: 1.1.3
+      axios: 0.27.2
     dev: false
 
   /axios-better-stacktrace/2.1.3_axios@0.24.0:
@@ -1695,16 +1695,6 @@ packages:
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
-
-  /axios/1.1.3:
-    resolution: {integrity: sha512-00tXVRwKx/FZr/IDVFt4C+f9FYairX517WoGCL6dpOntqLkZofjhu43F/Xl44UOpqa+9sLFDrG/XAnFsUYgkDA==}
-    dependencies:
-      follow-redirects: 1.15.2
-      form-data: 4.0.0
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
 
   /babel-jest/28.1.3_@babel+core@7.19.6:
     resolution: {integrity: sha512-epUaPOEWMk3cWX0M/sPvCHHCe9fMFAa/9hXEgKP8nFfNl/jlGkE9ucq9NqkZGXLDduCJYS0UvSlPUwC0S+rH6Q==}
@@ -4132,10 +4122,6 @@ packages:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
-
-  /proxy-from-env/1.1.0:
-    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-    dev: false
 
   /pump/3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
