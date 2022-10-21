@@ -18,7 +18,7 @@ export class UserController {
     return data
   }
 
-  @Get('/@me/servers')
+  @Get('/@me/server')
   async getSessionUserServers(@DiscordRest() client: AxiosInstance) {
     const { data } = await client.get<RESTGetAPICurrentUserGuildsResult>(
       Routes.userGuilds(),
