@@ -21,7 +21,7 @@ interface AccessTokenResp {
   scope: string
 }
 
-export interface AccessToken {
+export interface OAuthData {
   accessToken: string
   tokenType: string
   expiresIn: number
@@ -67,7 +67,7 @@ export class OAuthHelperService {
     return url.toString()
   }
 
-  async exchangeAccessCode(code: string): Promise<AccessToken> {
+  async exchangeAccessCode(code: string): Promise<OAuthData> {
     const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
 
     const { data } = await this.http.post<AccessTokenResp>(
