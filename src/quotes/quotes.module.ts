@@ -6,4 +6,4 @@ import { ServerQuotesController } from './controllers/server-quotes/server-quote
   imports: [WisdomCoreApiModule],
   controllers: [ServerQuotesController],
 })
-export class QuotesDataModule {}
+export class QuotesModule {}

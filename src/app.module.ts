@@ -5,7 +5,7 @@ import { DiscordOauthModule } from './discord-oauth/discord-oauth.module'
 import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
 import { DiscordDataModule } from './discord-data/discord-data.module'
-import { QuotesDataModule } from './quotes-data/quotes-data.module'
+import { QuotesModule } from './quotes/quotes.module'
 import { WisdomCoreApiModule } from './wisdom-core-api/wisdom-core-api.module'
 
 @Module({
@@ -17,7 +17,7 @@ import { WisdomCoreApiModule } from './wisdom-core-api/wisdom-core-api.module'
     DiscordOauthModule,
     SessionModule,
     DiscordDataModule,
-    QuotesDataModule,
+    QuotesModule,
     WisdomCoreApiModule,
   ],
   controllers: [],
