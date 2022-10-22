@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
 import {
   OAuth2Routes,
   RESTPostOAuth2AccessTokenResult,
 } from 'discord-api-types/v10'
+import { Axios } from 'axios'
 
 interface Params {
   clientId: string
@@ -39,7 +39,7 @@ export function convertAccessTokenResponseToData(
 export class OAuthHelperService {
   private config: Params
 
-  constructor(cfg: ConfigService, private http: HttpService) {
+  constructor(cfg: ConfigService, private axios: Axios) {
     this.config = {
       clientId: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_ID'),
       clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
@@ -81,7 +81,7 @@ export class OAuthHelperService {
   async exchangeAccessCode(code: string): Promise<OAuthData> {
     const { clientId, clientSecret, callbackUrl } = this.config
 
-    const { data } = await this.http.post<RESTPostOAuth2AccessTokenResult>(
+    const { data } = await this.axios.post<RESTPostOAuth2AccessTokenResult>(
       OAuth2Routes.tokenURL,
       stringify({
         grant_type: 'authorization_code',
