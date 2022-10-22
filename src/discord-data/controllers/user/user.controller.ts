@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common'
-import { DiscordRest } from 'src/param-decorators/discord-rest.decorator'
+import { DiscordApi } from 'src/param-decorators/discord-api.decorator'
 import {
   RESTGetAPICurrentUserGuildsResult,
   RESTGetAPICurrentUserResult,
@@ -10,17 +10,15 @@ import { AxiosInstance } from 'axios'
 @Controller('discord/user')
 export class UserController {
   @Get('/@me')
-  async getSessionUserData(@DiscordRest() client: AxiosInstance) {
-    const { data } = await client.get<RESTGetAPICurrentUserResult>(
-      Routes.user(),
-    )
+  async getSessionUserData(@DiscordApi() api: AxiosInstance) {
+    const { data } = await api.get<RESTGetAPICurrentUserResult>(Routes.user())
 
     return data
   }
 
   @Get('/@me/server')
-  async getSessionUserServers(@DiscordRest() client: AxiosInstance) {
-    const { data } = await client.get<RESTGetAPICurrentUserGuildsResult>(
+  async getSessionUserServers(@DiscordApi() api: AxiosInstance) {
+    const { data } = await api.get<RESTGetAPICurrentUserGuildsResult>(
       Routes.userGuilds(),
     )
 
