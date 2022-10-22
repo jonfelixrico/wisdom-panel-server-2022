@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { HttpModule, HttpService } from 'nestjs-http-promise'
-import { WISDOM_CORE_HTTP_CLIENT } from './wisdom-core-http-client'
+import { WISDOM_CORE_API_HTTP_CLIENT } from './wisdom-core-api-http-client.token'
 
 @Module({
   imports: [
@@ -18,11 +18,11 @@ import { WISDOM_CORE_HTTP_CLIENT } from './wisdom-core-http-client'
 
   providers: [
     {
-      provide: WISDOM_CORE_HTTP_CLIENT,
+      provide: WISDOM_CORE_API_HTTP_CLIENT,
       useExisting: HttpService,
     },
   ],
 
-  exports: [HttpService, WISDOM_CORE_HTTP_CLIENT],
+  exports: [HttpService, WISDOM_CORE_API_HTTP_CLIENT],
 })
 export class WisdomCoreApiModule {}
