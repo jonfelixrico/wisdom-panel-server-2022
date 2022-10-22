@@ -2,31 +2,37 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
+import {
+  OAuth2Routes,
+  RESTPostOAuth2AccessTokenResult,
+} from 'discord-api-types/v10'
 
 interface Params {
   clientId: string
   clientSecret: string
   callbackUrl: string
   scope: string
-
-  authorizationUrl: string
-  tokenUrl: string
 }
 
-interface AccessTokenResp {
-  access_token: string
-  token_type: string
-  expires_in: number
-  refresh_token: string
-  scope: string
-}
-
-export interface AccessToken {
+export interface OAuthData {
   accessToken: string
   tokenType: string
   expiresIn: number
   refreshToken: string
   scope: string
+}
+
+export function convertAccessTokenResponseToData(
+  data: RESTPostOAuth2AccessTokenResult,
+): OAuthData {
+  const { access_token, expires_in, refresh_token, token_type, scope } = data
+  return {
+    accessToken: access_token,
+    expiresIn: expires_in,
+    refreshToken: refresh_token,
+    scope,
+    tokenType: token_type,
+  }
 }
 
 @Injectable()
@@ -44,16 +50,21 @@ export class OAuthHelperService {
         .split(',')
         .map((s) => s.trim())
         .join(' '),
+    }
+  }
 
-      authorizationUrl: cfg.getOrThrow('DISCORD_OAUTH_AUTHORIZATION_URL'),
-      tokenUrl: cfg.getOrThrow('DISCORD_OAUTH_TOKEN_URL'),
+  get clientConfig() {
+    const { clientId, clientSecret } = this.config
+    return {
+      clientId,
+      clientSecret,
     }
   }
 
   generateAuthorizationUrl(state?: string): string {
-    const { authorizationUrl, clientId, callbackUrl, scope } = this.config
+    const { clientId, callbackUrl, scope } = this.config
 
-    const url = new URL(authorizationUrl)
+    const url = new URL(OAuth2Routes.authorizationURL)
     const sp = url.searchParams
     sp.append('client_id', clientId)
     sp.append('redirect_uri', callbackUrl)
@@ -67,11 +78,11 @@ export class OAuthHelperService {
     return url.toString()
   }
 
-  async exchangeAccessCode(code: string): Promise<AccessToken> {
-    const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
+  async exchangeAccessCode(code: string): Promise<OAuthData> {
+    const { clientId, clientSecret, callbackUrl } = this.config
 
-    const { data } = await this.http.post<AccessTokenResp>(
-      tokenUrl,
+    const { data } = await this.http.post<RESTPostOAuth2AccessTokenResult>(
+      OAuth2Routes.tokenURL,
       stringify({
         grant_type: 'authorization_code',
         client_id: clientId,
@@ -86,13 +97,6 @@ export class OAuthHelperService {
       },
     )
 
-    const { access_token, expires_in, refresh_token, token_type } = data
-    return {
-      accessToken: access_token,
-      expiresIn: expires_in,
-      refreshToken: refresh_token,
-      scope,
-      tokenType: token_type,
-    }
+    return convertAccessTokenResponseToData(data)
   }
 }

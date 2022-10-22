@@ -15,6 +15,9 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  axios: 0.27.2
+  axios-auth-refresh: ^3.3.4
+  discord-api-types: ^0.37.14
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -39,6 +42,9 @@ dependencies:
   '@nestjs/config': 2.2.0_bkbhg4knmtesqnnagm7a2p5cuy
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
+  axios: 0.27.2
+  axios-auth-refresh: 3.3.4_axios@0.27.2
+  discord-api-types: 0.37.14
   express-session: 1.17.3
   nestjs-http-promise: 2.0.0_tqvmdvrjo4ghzq2yoilcfekhea
   qs: 6.11.0
@@ -1651,6 +1657,14 @@ packages:
   /asynckit/0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
+  /axios-auth-refresh/3.3.4_axios@0.27.2:
+    resolution: {integrity: sha512-cGq3bZu+lip5j+byaQRZaZ3wpCUxs93jGV0614VYP5k2H1vbdoaw6HGazaUJxcRsFMctR3DItCAx1Dn7KerlcA==}
+    peerDependencies:
+      axios: '>= 0.18 < 0.19.0 || >= 0.19.1'
+    dependencies:
+      axios: 0.27.2
+    dev: false
+
   /axios-better-stacktrace/2.1.3_axios@0.24.0:
     resolution: {integrity: sha512-EELs/gb1qETDKU7rzhbOXPtN6SFcRzkD5gmq84zKT0ZhbcFkw6twz8CYH7X1CzkHFMlv7vqfqP1muQsVJS3XoQ==}
     peerDependencies:
@@ -2188,6 +2202,10 @@ packages:
     dependencies:
       path-type: 4.0.0
     dev: true
+
+  /discord-api-types/0.37.14:
+    resolution: {integrity: sha512-byBH7SfDCMJwxdqeS8k5sihltH88/YPhuwx+vF2cftSxFLdxyHyU/ZxDL3bq+LB2c4ls/TymE76/ISlLfniUXg==}
+    dev: false
 
   /doctrine/3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
