@@ -11,7 +11,10 @@ import {
 import { stringify } from 'qs'
 import { convertAccessTokenResponseToData } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 
-export const DiscordRest = createParamDecorator(
+/**
+ * Retrieves the HTTP client loaded with the session user's Discord credentials.
+ */
+export const DiscordApi = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const session: DiscordOAuthSessionData = ctx
       .switchToHttp()

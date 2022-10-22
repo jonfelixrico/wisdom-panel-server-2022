@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common'
-import { HttpModule } from 'nestjs-http-promise'
+import axios, { Axios } from 'axios'
 import { AuthController } from './controllers/auth/auth.controller'
 import { OAuthHelperService } from './services/oauth-helper/oauth-helper.service'
 
 @Module({
   controllers: [AuthController],
-  providers: [OAuthHelperService],
-  imports: [HttpModule],
+  providers: [
+    OAuthHelperService,
+    {
+      provide: Axios,
+      useValue: axios,
+    },
+  ],
 })
 export class DiscordOauthModule {}
