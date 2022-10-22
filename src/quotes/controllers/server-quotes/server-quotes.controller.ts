@@ -11,7 +11,6 @@ export class ServerQuotesController {
     @Param('serverId') serverId: string,
     @Query('authorId') authorId: string,
   ) {
-    console.debug(serverId)
     const { data } = await this.api.get<ServerQuoteDto[]>(
       `server/${serverId}/quote`,
       {
