@@ -6,6 +6,7 @@ import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
 import { DiscordDataModule } from './discord-data/discord-data.module'
 import { QuotesDataModule } from './quotes-data/quotes-data.module'
+import { WisdomCoreApiModule } from './wisdom-core-api/wisdom-core-api.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { QuotesDataModule } from './quotes-data/quotes-data.module'
     SessionModule,
     DiscordDataModule,
     QuotesDataModule,
+    WisdomCoreApiModule,
   ],
   controllers: [],
   providers: [
