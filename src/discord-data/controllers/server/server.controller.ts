@@ -1,33 +1,12 @@
 import { Controller, Get, Param } from '@nestjs/common'
-import { AxiosInstance } from 'axios'
-import {
-  RESTGetAPIGuildMembersResult,
-  RESTGetAPIGuildResult,
-  Routes,
-} from 'discord-api-types/v10'
-import { DiscordApi } from 'src/param-decorators/discord-api.decorator'
+import { BotApiService } from 'src/discord-data/services/bot-api/bot-api.service'
 
 @Controller('discord/server/:serverId')
 export class ServerController {
-  @Get()
-  async getServer(
-    @DiscordApi() api: AxiosInstance,
-    @Param('serverId') serverId: string,
-  ) {
-    const { data } = await api.get<RESTGetAPIGuildResult>(
-      Routes.guild(serverId),
-    )
-    return data
-  }
+  constructor(private botSvc: BotApiService) {}
 
   @Get('member')
-  async listServerMembers(
-    @DiscordApi() api: AxiosInstance,
-    @Param('serverId') serverId: string,
-  ) {
-    const { data } = await api.get<RESTGetAPIGuildMembersResult>(
-      Routes.guildMembers(serverId),
-    )
-    return data
+  async listServerMembers(@Param('serverId') serverId: string) {
+    return await this.botSvc.getServerMembers(serverId)
   }
 }
