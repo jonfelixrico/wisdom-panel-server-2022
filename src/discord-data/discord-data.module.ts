@@ -6,19 +6,26 @@ import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { RouteBases } from 'discord-api-types/v10'
 import { BotApiService } from './services/bot-api/bot-api.service'
+import { setupCache } from 'axios-cache-adapter'
 
 @Module({
   providers: [
     {
       provide: DiscordBotApiClient,
       inject: [ConfigService],
-      useFactory: (cfg: ConfigService) =>
-        axios.create({
+      useFactory: (cfg: ConfigService) => {
+        const cache = setupCache({
+          maxAge: 5 * 60 * 1000,
+        })
+
+        return axios.create({
           baseURL: RouteBases.api,
           headers: {
             Authorization: `Bot ${cfg.getOrThrow('DISCORD_BOT_TOKEN')}`,
           },
-        }),
+          adapter: cache.adapter,
+        })
+      },
     },
     BotApiService,
   ],
