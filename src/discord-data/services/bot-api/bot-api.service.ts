@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import {
   RESTGetAPICurrentUserGuildsResult,
   RESTGetAPIGuildMemberResult,
+  RESTGetAPIGuildMembersQuery,
   Routes,
 } from 'discord-api-types/v10'
 import { DiscordBotApiClient } from 'src/discord-data/discord-bot-api-client.class'
@@ -34,9 +35,18 @@ export class BotApiService {
    * @param serverId
    * @returns
    */
-  async getServerMembers(serverId: string) {
+  async getServerMembers(
+    serverId: string,
+    query?: Omit<RESTGetAPIGuildMembersQuery, 'limit'>,
+  ) {
     const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(
       Routes.guildMembers(serverId),
+      {
+        params: {
+          ...query,
+          limit: 100,
+        } as RESTGetAPIGuildMembersQuery,
+      },
     )
 
     return data
