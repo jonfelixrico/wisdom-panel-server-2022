@@ -16,7 +16,7 @@ import { BotApiService } from './services/bot-api/bot-api.service'
         axios.create({
           baseURL: RouteBases.api,
           headers: {
-            Authorization: `Bearer ${cfg.getOrThrow('DISCORD_BOT_TOKEN')}`,
+            Authorization: `Bot ${cfg.getOrThrow('DISCORD_BOT_TOKEN')}`,
           },
         }),
     },
