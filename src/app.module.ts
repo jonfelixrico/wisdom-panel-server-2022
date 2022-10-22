@@ -5,6 +5,7 @@ import { DiscordOauthModule } from './discord-oauth/discord-oauth.module'
 import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
 import { DiscordDataModule } from './discord-data/discord-data.module'
+import { QuotesDataModule } from './quotes-data/quotes-data.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DiscordDataModule } from './discord-data/discord-data.module'
     DiscordOauthModule,
     SessionModule,
     DiscordDataModule,
+    QuotesDataModule,
   ],
   controllers: [],
   providers: [
