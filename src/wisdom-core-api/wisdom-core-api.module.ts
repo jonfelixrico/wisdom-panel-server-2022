@@ -19,10 +19,11 @@ import { WISDOM_CORE_API_HTTP_CLIENT } from './wisdom-core-api-http-client.token
   providers: [
     {
       provide: WISDOM_CORE_API_HTTP_CLIENT,
-      useExisting: HttpService,
+      useFactory: (svc: HttpService) => svc,
+      inject: [HttpService],
     },
   ],
 
-  exports: [HttpService, WISDOM_CORE_API_HTTP_CLIENT],
+  exports: [WISDOM_CORE_API_HTTP_CLIENT],
 })
 export class WisdomCoreApiModule {}
