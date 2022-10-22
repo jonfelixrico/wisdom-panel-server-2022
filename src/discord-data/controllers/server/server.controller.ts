@@ -17,7 +17,7 @@ export class ServerController {
     return data
   }
 
-  @Get()
+  @Get('member')
   async listServerMembers(
     @DiscordApi() api: AxiosInstance,
     @Param() serverId: string,
