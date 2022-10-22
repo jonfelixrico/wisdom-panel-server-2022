@@ -5,6 +5,7 @@ import { DiscordBotApiClient } from './discord-bot-api-client.class'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { RouteBases } from 'discord-api-types/v10'
+import { BotApiService } from './services/bot-api/bot-api.service'
 
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import { RouteBases } from 'discord-api-types/v10'
           },
         }),
     },
+    BotApiService,
   ],
   controllers: [UserController, ServerController],
 })
