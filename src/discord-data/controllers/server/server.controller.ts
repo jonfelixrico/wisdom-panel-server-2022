@@ -10,7 +10,10 @@ import { DiscordApi } from 'src/param-decorators/discord-api.decorator'
 @Controller('discord/server/:serverId')
 export class ServerController {
   @Get()
-  async getServer(@DiscordApi() api: AxiosInstance, @Param() serverId: string) {
+  async getServer(
+    @DiscordApi() api: AxiosInstance,
+    @Param('serverId') serverId: string,
+  ) {
     const { data } = await api.get<RESTGetAPIGuildResult>(
       Routes.guild(serverId),
     )
@@ -20,7 +23,7 @@ export class ServerController {
   @Get('member')
   async listServerMembers(
     @DiscordApi() api: AxiosInstance,
-    @Param() serverId: string,
+    @Param('serverId') serverId: string,
   ) {
     const { data } = await api.get<RESTGetAPIGuildMembersResult>(
       Routes.guildMembers(serverId),

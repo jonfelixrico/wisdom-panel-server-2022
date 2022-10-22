@@ -7,11 +7,12 @@ import { ServerQuoteDto } from './server-quotes.dtos'
 export class ServerQuotesController {
   constructor(@Inject(WISDOM_CORE_API_HTTP_CLIENT) private api: HttpService) {}
 
-  @Get()
+  @Get('quote')
   async getServerQuotes(
-    @Param() serverId: string,
+    @Param('serverId') serverId: string,
     @Query('authorId') authorId: string,
   ) {
+    console.debug(serverId)
     const { data } = await this.api.get<ServerQuoteDto[]>(
       `server/${serverId}/quote`,
       {
