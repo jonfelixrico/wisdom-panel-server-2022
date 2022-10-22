@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import {
   RESTGetAPICurrentUserGuildsResult,
-  RESTGetAPIGuildMemberResult,
   RESTGetAPIGuildMembersQuery,
+  RESTGetAPIGuildMembersResult,
   Routes,
 } from 'discord-api-types/v10'
 import { DiscordBotApiClient } from 'src/discord-data/discord-bot-api-client.class'
+
+const FETCH_MEMBERS_PAGINATION_SIZE = 1000
 
 /**
  * Uses the Wisdom bot user to perform some API calls.
@@ -35,20 +37,31 @@ export class BotApiService {
    * @param serverId
    * @returns
    */
-  async getServerMembers(
-    serverId: string,
-    query?: Omit<RESTGetAPIGuildMembersQuery, 'limit'>,
-  ) {
-    const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(
-      Routes.guildMembers(serverId),
-      {
-        params: {
-          ...query,
-          limit: 100,
-        } as RESTGetAPIGuildMembersQuery,
-      },
-    )
+  async getServerMembers(serverId: string) {
+    const members: RESTGetAPIGuildMembersResult = []
 
-    return data
+    while (true) {
+      const after =
+        members.length > 0 ? members[members.length - 1].user.id : undefined
+
+      const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(
+        Routes.guildMembers(serverId),
+        {
+          params: {
+            limit: FETCH_MEMBERS_PAGINATION_SIZE,
+            after,
+          } as RESTGetAPIGuildMembersQuery,
+        },
+      )
+      members.push(...data)
+
+      if (data.length < FETCH_MEMBERS_PAGINATION_SIZE) {
+        break
+      }
+
+      // else, keep going since there might be more members
+    }
+
+    return members
   }
 }
