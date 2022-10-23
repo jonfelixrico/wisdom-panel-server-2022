@@ -10,6 +10,14 @@ export class SessionController {
 
   @Delete()
   async clearSession(@Req() req: Request) {
-    req.session.destroy()
+    await new Promise<void>((resolve, reject) => {
+      req.session.destroy((err) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve()
+      })
+    })
   }
 }
