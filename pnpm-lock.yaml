@@ -9,6 +9,7 @@ specifiers:
   '@nestjs/schematics': ^8.0.0
   '@nestjs/testing': ^8.0.0
   '@types/express': ^4.17.13
+  '@types/express-session': ^1.17.5
   '@types/jest': 27.5.0
   '@types/node': ^16.0.0
   '@types/qs': ^6.9.7
@@ -57,6 +58,7 @@ devDependencies:
   '@nestjs/schematics': 8.0.11_typescript@4.8.4
   '@nestjs/testing': 8.4.7_yg656aic4dli3q2c2sx4xyqza4
   '@types/express': 4.17.14
+  '@types/express-session': 1.17.5
   '@types/jest': 27.5.0
   '@types/node': 16.11.68
   '@types/qs': 6.9.7
@@ -1154,6 +1156,12 @@ packages:
       '@types/node': 16.11.68
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
+    dev: true
+
+  /@types/express-session/1.17.5:
+    resolution: {integrity: sha512-l0DhkvNVfyUPEEis8fcwbd46VptfA/jmMwHfob2TfDMf3HyPLiB9mKD71LXhz5TMUobODXPD27zXSwtFQLHm+w==}
+    dependencies:
+      '@types/express': 4.17.14
     dev: true
 
   /@types/express/4.17.14:
