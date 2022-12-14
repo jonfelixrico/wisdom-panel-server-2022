@@ -12,7 +12,7 @@ import { WisdomCoreApiModule } from './wisdom-core-api/wisdom-core-api.module'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.default'],
+      envFilePath: ['.env', '.env.defaults'],
     }),
     DiscordOauthModule,
     SessionModule,
