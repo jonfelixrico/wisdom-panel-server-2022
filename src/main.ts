@@ -2,9 +2,12 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import * as session from 'express-session'
 import { randomUUID } from 'crypto'
+import { WINSTON_LOGGER } from './logger'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    logger: WINSTON_LOGGER,
+  })
 
   app.use(
     session({
