@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { DISCORD_BOT_API_PROVIDER } from './providers/discord-bot-api'
+import { DISCORD_BOT_API_PROVIDER } from './providers/discord-bot-api.provider'
 import { ServerMemberRepositoryService } from './services/server-member-repository/server-member-repository.service'
 
 @Module({

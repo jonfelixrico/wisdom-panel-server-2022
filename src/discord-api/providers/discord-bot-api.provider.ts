@@ -1,8 +1,11 @@
 import { Provider } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import { DiscordBotApiClient } from './discord-bot-api-client.class'
 import { RouteBases } from 'discord-api-types/v10'
+
+import { Axios } from 'axios'
+
+export class DiscordBotApiClient extends Axios {}
 
 export const DISCORD_BOT_API_PROVIDER: Provider = {
   provide: DiscordBotApiClient,
