@@ -31,6 +31,10 @@ export class SessionGuard implements CanActivate {
       return true
     }
 
+    /*
+     * If we just return false, Nest will throw 403.
+     * We want 401 for no sessions, so we have to throw it explicitly.
+     */
     throw new UnauthorizedException()
   }
 }
