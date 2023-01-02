@@ -1,7 +1,7 @@
 import { Provider } from '@nestjs/common'
 import { caching } from 'cache-manager'
 
-const DISCORD_BOT_CACHE = Symbol('discord bot cache')
+export const DISCORD_BOT_CACHE = Symbol('discord bot cache')
 
 export function provideDiscordBotCache(): Provider {
   return {
