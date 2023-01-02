@@ -131,6 +131,20 @@ export class AuthController {
       const authToken = await this.oauthHelper.exchangeAccessCode(code)
       req.session.tokens = authToken
 
+      /*
+       * Need to call session.save manually because it will not get called automatically by the framework if
+       * res.redirect was called.
+       */
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve()
+          }
+        })
+      })
+
       // Redirect to FE
       res.redirect(this.buildFrontEndRedirectUrl(state))
     } else if (query.error) {
