@@ -54,7 +54,7 @@ export class AuthController {
     res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
   }
 
-  private buildRedirectUrl(
+  private buildFrontEndRedirectUrl(
     state?: string,
     otherParams: Record<string, string> = {},
   ) {
@@ -126,14 +126,18 @@ export class AuthController {
       // OAuth was successful
       const { code, state } = query
 
+      // Establish the session
       const authToken = await this.oauthHelper.exchangeAccessCode(code)
       req.session.tokens = authToken
 
-      res.redirect(this.buildRedirectUrl(state))
+      // Redirect to FE
+      res.redirect(this.buildFrontEndRedirectUrl(state))
     } else if (query.error) {
       // OAuth failed
       const { error, error_description: errorDescription, state } = query
-      res.redirect(this.buildRedirectUrl(state, { error, errorDescription }))
+      res.redirect(
+        this.buildFrontEndRedirectUrl(state, { error, errorDescription }),
+      )
     } else {
       /*
        * Not authenticated, but no error nor code was present.
@@ -141,7 +145,9 @@ export class AuthController {
        * We're not throwing a 400 bad request since we want the front-end to handle the error handling.
        * Additionally, this is not expected to be called as AJAX.
        */
-      res.redirect(this.buildRedirectUrl(undefined, { badRequest: 'true' }))
+      res.redirect(
+        this.buildFrontEndRedirectUrl(undefined, { badRequest: 'true' }),
+      )
     }
   }
 }
