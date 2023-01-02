@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Req, Res } from '@nestjs/common'
+import { Controller, Get, Logger, Query, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import {
@@ -17,6 +17,8 @@ declare module 'express-session' {
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
 export class AuthController {
+  private readonly LOGGER = new Logger(AuthController.name)
+
   constructor(
     private oauthHelper: OAuthHelperService,
     private cfg: ConfigService,
@@ -49,9 +51,9 @@ export class AuthController {
   ) {
     if (req.session?.tokens) {
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
+    } else {
+      res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
     }
-
-    res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
   }
 
   private buildFrontEndRedirectUrl(
