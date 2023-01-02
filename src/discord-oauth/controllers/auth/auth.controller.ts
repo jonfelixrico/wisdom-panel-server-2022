@@ -1,16 +1,29 @@
 import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
-import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
+import { SessionData } from 'express-session'
+import {
+  AccessToken,
+  OAuthHelperService,
+} from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 
 interface CodePayload {
   code: string
 }
 
+declare module 'express-session' {
+  interface SessionData {
+    tokens: AccessToken
+  }
+}
+
 @Controller('auth/oauth/discord')
 export class AuthController {
-  constructor(private helper: OAuthHelperService, private cfg: ConfigService) {}
+  constructor(
+    private oauthHelper: OAuthHelperService,
+    private cfg: ConfigService,
+  ) {}
 
   @PublicRoute()
   @Get()
@@ -22,7 +35,7 @@ export class AuthController {
       stringified = JSON.stringify(query)
     }
 
-    res.redirect(this.helper.generateAuthorizationUrl(stringified))
+    res.redirect(this.oauthHelper.generateAuthorizationUrl(stringified))
   }
 
   @PublicRoute()
@@ -49,10 +62,9 @@ export class AuthController {
   @Post()
   async exchangeAccessCode(
     @Body() { code }: CodePayload,
-    @Session() session: Record<string, unknown>,
+    @Session() session: SessionData,
   ) {
-    const authToken = await this.helper.exchangeAccessCode(code)
-    session.isAuthenticated = true
+    const authToken = await this.oauthHelper.exchangeAccessCode(code)
     session.tokens = authToken
   }
 }
