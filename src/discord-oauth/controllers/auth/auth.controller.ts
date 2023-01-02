@@ -59,7 +59,8 @@ export class AuthController {
     otherParams: Record<string, string> = {},
   ) {
     const url = new URL(
-      this.cfg.getOrThrow('DISCORD_OAUTH_FRONTEND_CALLBACK_URL'),
+      this.cfg.getOrThrow('DISCORD_OAUTH_FRONTEND_LANDING_PATH'),
+      this.cfg.getOrThrow('FRONTEND_URL'),
     )
 
     for (const key in otherParams) {
