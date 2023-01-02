@@ -9,7 +9,7 @@ export function provideDiscordBotCache(): Provider {
     useFactory() {
       return caching('memory', {
         max: 100,
-        ttl: 10 * 1000 /*milliseconds*/,
+        ttl: 30 * 1000,
       })
     },
   }
