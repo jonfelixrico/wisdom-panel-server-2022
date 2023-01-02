@@ -2,12 +2,16 @@ import { Controller, Delete, Get, Logger, Req } from '@nestjs/common'
 import { Request } from 'express'
 
 @Controller('session')
+/**
+ * Contains generic session-related endpoints such as checking and deleting (logging out).
+ * Does not contain authentication endpoints since there are many mediums to authentication such as
+ * OAuth, password, social login, etc. Those will be handled by their dedicated controllers.
+ */
 export class SessionController {
   private readonly LOGGER = new Logger(SessionController.name)
 
   /**
    * Sole purpose is for session-checking.
-   * @returns
    */
   @Get()
   async getSession() {
@@ -17,8 +21,11 @@ export class SessionController {
     return
   }
 
+  /**
+   * Signs the user out.
+   */
   @Delete()
-  async destroySession(@Req() req: Request) {
+  async logOut(@Req() req: Request) {
     const { LOGGER } = this
 
     // TODO include user id here
