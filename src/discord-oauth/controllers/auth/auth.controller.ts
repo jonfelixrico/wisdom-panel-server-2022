@@ -21,7 +21,10 @@ declare module 'express-session' {
 
 @Controller('auth/oauth/discord')
 export class AuthController {
-  constructor(private helper: OAuthHelperService, private cfg: ConfigService) {}
+  constructor(
+    private oauthHelper: OAuthHelperService,
+    private cfg: ConfigService,
+  ) {}
 
   @PublicRoute()
   @Get()
@@ -33,7 +36,7 @@ export class AuthController {
       stringified = JSON.stringify(query)
     }
 
-    res.redirect(this.helper.generateAuthorizationUrl(stringified))
+    res.redirect(this.oauthHelper.generateAuthorizationUrl(stringified))
   }
 
   @PublicRoute()
@@ -62,7 +65,7 @@ export class AuthController {
     @Body() { code }: CodePayload,
     @Session() session: SessionData,
   ) {
-    const authToken = await this.helper.exchangeAccessCode(code)
+    const authToken = await this.oauthHelper.exchangeAccessCode(code)
     session.isAuthenticated = true
     session.tokens = authToken
   }
