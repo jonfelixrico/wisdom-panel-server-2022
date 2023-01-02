@@ -12,12 +12,11 @@ export class ServerMemberRepositoryService {
   ) {}
 
   async getMember(serverId: string, userId: string) {
-    return this.cache.wrap(
-      `server/${serverId}/user/${userId}`,
-      async () =>
-        await this.api.get<RESTGetAPIGuildMemberResult>(
-          Routes.guildMember(serverId, userId),
-        ),
-    )
+    return this.cache.wrap(`server/${serverId}/user/${userId}`, async () => {
+      const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(
+        Routes.guildMember(serverId, userId),
+      )
+      return data
+    })
   }
 }
