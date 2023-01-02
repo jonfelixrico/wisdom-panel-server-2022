@@ -7,6 +7,7 @@ import {
   OAuthHelperService,
 } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 interface CodePayload {
   code: string
@@ -18,6 +19,7 @@ declare module 'express-session' {
   }
 }
 
+@ApiTags('OAuth')
 @Controller('auth/oauth/discord')
 export class AuthController {
   constructor(
@@ -25,9 +27,19 @@ export class AuthController {
     private cfg: ConfigService,
   ) {}
 
+  @ApiOperation({
+    description:
+      'Starts the Authorization Code Grant flow for Discord. This will redirect the user to the Discord auth page. Accepts query params.',
+    externalDocs: {
+      url: 'https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-authorization-url-example',
+      description: 'Check only the "Authorization URL example" part',
+    },
+    operationId: 'discordOAuthStart',
+  })
   @PublicRoute()
   @Get()
   startOAuth(@Res() res: Response, @Req() req: Request) {
+    // TODO redirect back to FE if already authenticated
     const query = req.query ?? {}
 
     let stringified: string
@@ -38,6 +50,27 @@ export class AuthController {
     res.redirect(this.oauthHelper.generateAuthorizationUrl(stringified))
   }
 
+  @ApiOperation({
+    description:
+      'The Discord OAuth will redirect here once the user has authorized the app.',
+    externalDocs: {
+      url: 'https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-redirect-url-example',
+      description: 'Check only the "Redirect URL example" part',
+    },
+    operationId: 'discordOAuthCallback',
+    parameters: [
+      {
+        in: 'query',
+        name: 'code',
+        schema: {
+          type: 'string',
+        },
+        description:
+          'The OAuth code given to us by the Discord OAuth. This is to be exchanged back to Discord for the access and refresh tokens.',
+        required: true,
+      },
+    ],
+  })
   @PublicRoute()
   @Get('callback')
   async oauthCallback(@Res() res: Response, @Req() req: Request) {
@@ -58,6 +91,26 @@ export class AuthController {
     res.redirect(url.toString())
   }
 
+  @ApiOperation({
+    operationId: 'discordOAuthCodeExchange',
+    description:
+      'Consumes the code provided by Discord and logs the user in. This is the final step.',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              code: {
+                type: 'string',
+                description: 'The access grant code',
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   @PublicRoute()
   @Post()
   async exchangeAccessCode(

@@ -1,6 +1,8 @@
 import { Controller, Delete, Get, Logger, Req } from '@nestjs/common'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
 
+@ApiTags('session')
 @Controller('session')
 /**
  * Contains generic session-related endpoints such as checking and deleting (logging out).
@@ -10,9 +12,9 @@ import { Request } from 'express'
 export class SessionController {
   private readonly LOGGER = new Logger(SessionController.name)
 
-  /**
-   * Sole purpose is for session-checking.
-   */
+  @ApiOperation({
+    description: 'For session-checking',
+  })
   @Get()
   async getSession() {
     /*
@@ -21,9 +23,9 @@ export class SessionController {
     return
   }
 
-  /**
-   * Signs the user out.
-   */
+  @ApiOperation({
+    description: 'Logs the user out',
+  })
   @Delete()
   async logOut(@Req() req: Request) {
     const { LOGGER } = this
