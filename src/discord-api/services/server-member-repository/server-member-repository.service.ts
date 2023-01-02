@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
+import { DiscordBotApi } from 'src/discord-api/providers/discord-bot-api.provider'
 
 @Injectable()
 export class ServerMemberRepositoryService {
-  constructor(private botApi: DiscordBotApiClient) {}
+  constructor(private botApi: DiscordBotApi) {}
 }
