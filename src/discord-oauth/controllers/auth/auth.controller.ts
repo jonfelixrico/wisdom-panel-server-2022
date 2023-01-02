@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import {
@@ -34,19 +34,23 @@ export class AuthController {
       description: 'Check only the "Authorization URL example" part',
     },
     operationId: 'discordOAuthStart',
+    parameters: [
+      {
+        in: 'query',
+        name: 'state',
+        schema: {
+          type: 'string',
+        },
+      },
+    ],
   })
   @PublicRoute()
   @Get()
-  startOAuth(@Res() res: Response, @Req() req: Request) {
   startOAuth(@Res() res: Response, @Query('state') state: string) {
     // TODO redirect back to FE if already authenticated
-    const query = req.query ?? {}
     res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
   }
 
-    let stringified: string
-    if (Object.keys(query).length) {
-      stringified = JSON.stringify(query)
   private buildRedirectUrl(
     state?: string,
     otherParams: Record<string, string> = {},
@@ -63,7 +67,6 @@ export class AuthController {
       url.searchParams.set('state', state)
     }
 
-    res.redirect(this.oauthHelper.generateAuthorizationUrl(stringified))
     return url.toString()
   }
 
@@ -82,18 +85,32 @@ export class AuthController {
         schema: {
           type: 'string',
         },
-        description:
-          'The OAuth code given to us by the Discord OAuth. This is to be exchanged back to Discord for the access and refresh tokens.',
-        required: true,
+      },
+      {
+        in: 'query',
+        name: 'state',
+        schema: {
+          type: 'string',
+        },
+      },
+      {
+        in: 'query',
+        name: 'error',
+        schema: {
+          type: 'string',
+        },
+      },
+      {
+        in: 'query',
+        name: 'error_description',
+        schema: {
+          type: 'string',
+        },
       },
     ],
   })
   @PublicRoute()
   @Get('callback')
-  async oauthCallback(@Res() res: Response, @Req() req: Request) {
-    const url = new URL(
-      this.cfg.getOrThrow('DISCORD_OAUTH_FRONTEND_CALLBACK_URL'),
-    )
   async oauthCallback(
     @Res() res: Response,
     @Req() req: Request,
@@ -106,19 +123,9 @@ export class AuthController {
       // OAuth was successful
       const { code, state } = query
 
-    const sp = url.searchParams
-    for (const key in req.query) {
-      const value = req.query[key]
-      if (typeof value === 'string') {
-        sp.append(key, value)
-      } else {
-        sp.append(key, JSON.stringify(value))
-      }
-    }
       const authToken = await this.oauthHelper.exchangeAccessCode(code)
       req.session.tokens = authToken
 
-    res.redirect(url.toString())
       res.redirect(this.buildRedirectUrl(state))
     } else if (query.error) {
       // OAuth failed
