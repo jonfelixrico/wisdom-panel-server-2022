@@ -1,6 +1,8 @@
 import { Controller, Delete, Get, Logger, Req } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { Request } from 'express'
 
+@ApiTags('session')
 @Controller('session')
 /**
  * Contains generic session-related endpoints such as checking and deleting (logging out).

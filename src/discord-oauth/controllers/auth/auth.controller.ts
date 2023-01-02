@@ -7,6 +7,7 @@ import {
   OAuthHelperService,
 } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
+import { ApiTags } from '@nestjs/swagger'
 
 interface CodePayload {
   code: string
@@ -18,6 +19,7 @@ declare module 'express-session' {
   }
 }
 
+@ApiTags('OAuth')
 @Controller('auth/oauth/discord')
 export class AuthController {
   constructor(
