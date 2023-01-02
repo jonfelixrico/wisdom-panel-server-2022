@@ -14,7 +14,6 @@ interface CodePayload {
 
 declare module 'express-session' {
   interface SessionData {
-    isAuthenticated: boolean
     tokens: AccessToken
   }
 }
@@ -66,7 +65,6 @@ export class AuthController {
     @Session() session: SessionData,
   ) {
     const authToken = await this.oauthHelper.exchangeAccessCode(code)
-    session.isAuthenticated = true
     session.tokens = authToken
   }
 }
