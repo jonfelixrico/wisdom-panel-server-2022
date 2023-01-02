@@ -16,9 +16,9 @@ export class ServerMemberController {
   ): Promise<ServerMemberDto> {
     const member = await this.repo.getMember(serverId, userId)
 
-    return new ServerMemberDto(
-      member.nick || member.user.username,
-      getMemberAvatarUrl(serverId, member),
-    )
+    return {
+      username: member.nick || member.user.username,
+      avatarUrl: getMemberAvatarUrl(serverId, member),
+    }
   }
 }
