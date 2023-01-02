@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from 'src/app.module'
-import { WINSTON_LOGGER } from './logger'
-import { openApiSetup } from './open-api'
-import { sessionSetup } from './session'
+import { AppModule } from './app.module'
+import { WINSTON_LOGGER } from './main-setup/logger'
+import { openApiSetup } from './main-setup/open-api'
+import { sessionSetup } from './main-setup/session'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
