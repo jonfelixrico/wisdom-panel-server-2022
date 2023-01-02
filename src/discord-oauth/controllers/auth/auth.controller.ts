@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common'
+import { Controller, Get, Query, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import {
@@ -7,10 +7,6 @@ import {
 } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-
-interface CodePayload {
-  code: string
-}
 
 declare module 'express-session' {
   interface SessionData {
@@ -147,32 +143,5 @@ export class AuthController {
        */
       res.redirect(this.buildRedirectUrl(undefined, { badRequest: 'true' }))
     }
-  }
-
-  @ApiOperation({
-    operationId: 'discordOAuthCodeExchange',
-    description:
-      'Consumes the code provided by Discord and logs the user in. This is the final step.',
-    requestBody: {
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              code: {
-                type: 'string',
-                description: 'The access grant code',
-              },
-            },
-          },
-        },
-      },
-    },
-  })
-  @PublicRoute()
-  @Post()
-  async exchangeAccessCode(@Body() { code }: CodePayload, @Req() req: Request) {
-    const authToken = await this.oauthHelper.exchangeAccessCode(code)
-    req.session.tokens = authToken
   }
 }
