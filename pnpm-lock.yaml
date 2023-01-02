@@ -18,6 +18,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
   axios: ^1.2.2
+  discord-api-types: ^0.37.25
   dotenv-defaults: ^5.0.2
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
@@ -48,6 +49,7 @@ dependencies:
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/swagger': 6.1.4_zysgbzrbqurgi5bpxpfkrj3lie
   axios: 1.2.2
+  discord-api-types: 0.37.25
   dotenv-defaults: 5.0.2
   express-session: 1.17.3
   nest-winston: 1.8.0_5rqplkgjo3qfqjv34ceyw5sx3m
@@ -2290,6 +2292,10 @@ packages:
     dependencies:
       path-type: 4.0.0
     dev: true
+
+  /discord-api-types/0.37.25:
+    resolution: {integrity: sha512-aCwA2sWnL1zPQgTELkkMzQneuWyCXXUjZCUKswesiE6RDCfOfxAPXOHg6ZTlBA5layPSikGCBBRjyh8S3Wzd+A==}
+    dev: false
 
   /doctrine/3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
