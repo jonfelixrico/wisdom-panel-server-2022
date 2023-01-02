@@ -46,8 +46,15 @@ export class AuthController {
   })
   @PublicRoute()
   @Get()
-  startOAuth(@Res() res: Response, @Query('state') state: string) {
-    // TODO redirect back to FE if already authenticated
+  startOAuth(
+    @Res() res: Response,
+    @Query('state') state: string,
+    @Req() req: Request,
+  ) {
+    if (req.session?.tokens) {
+      res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
+    }
+
     res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
   }
 
@@ -118,7 +125,7 @@ export class AuthController {
   ) {
     if (req.session.tokens) {
       // Handling for already-authenticated users
-      res.redirect(this.buildRedirectUrl())
+      res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else if (query.code) {
       // OAuth was successful
       const { code, state } = query
