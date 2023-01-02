@@ -6,7 +6,7 @@ import {
   ImageFormat,
 } from 'discord-api-types/v10'
 
-export function getMemberAvatar(
+export function getMemberAvatarUrl(
   serverId: string,
   member: APIGuildMember,
 ): string {
@@ -19,10 +19,10 @@ export function getMemberAvatar(
     )
   }
 
-  return getUserAvatar(member.user)
+  return getUserAvatarUrl(member.user)
 }
 
-export function getUserAvatar(user: APIUser): string {
+export function getUserAvatarUrl(user: APIUser): string {
   if (user.avatar) {
     // user has an avatar
     return CDNRoutes.userAvatar(user.id, user.avatar, ImageFormat.WebP)
