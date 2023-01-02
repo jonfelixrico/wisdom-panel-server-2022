@@ -7,15 +7,17 @@ import { Axios } from 'axios'
 
 export class DiscordBotApi extends Axios {}
 
-export const DISCORD_BOT_API_PROVIDER: Provider = {
-  provide: DiscordBotApi,
-  useFactory(cfg: ConfigService) {
-    return axios.create({
-      baseURL: RouteBases.api,
-      headers: {
-        Authorization: `Bot ${cfg.getOrThrow('DISCORD_BOT_TOKEN')}`,
-      },
-    })
-  },
-  inject: [ConfigService],
+export function provideDiscordBotApi(): Provider {
+  return {
+    provide: DiscordBotApi,
+    useFactory(cfg: ConfigService) {
+      return axios.create({
+        baseURL: RouteBases.api,
+        headers: {
+          Authorization: `Bot ${cfg.getOrThrow('DISCORD_BOT_TOKEN')}`,
+        },
+      })
+    },
+    inject: [ConfigService],
+  }
 }
