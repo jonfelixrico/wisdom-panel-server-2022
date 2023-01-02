@@ -17,6 +17,9 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.0.0
   '@typescript-eslint/parser': ^5.0.0
+  axios: ^1.2.2
+  cache-manager: ^5.1.4
+  discord-api-types: ^0.37.25
   dotenv-defaults: ^5.0.2
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
@@ -41,11 +44,14 @@ specifiers:
   winston-daily-rotate-file: ^4.7.1
 
 dependencies:
-  '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+  '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
   '@nestjs/config': 2.2.0_bkbhg4knmtesqnnagm7a2p5cuy
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/swagger': 6.1.4_zysgbzrbqurgi5bpxpfkrj3lie
+  axios: 1.2.2
+  cache-manager: 5.1.4
+  discord-api-types: 0.37.25
   dotenv-defaults: 5.0.2
   express-session: 1.17.3
   nest-winston: 1.8.0_5rqplkgjo3qfqjv34ceyw5sx3m
@@ -901,7 +907,7 @@ packages:
       - webpack-cli
     dev: true
 
-  /@nestjs/common/8.4.7_yzt46al3aifnexifjjdb4dxxja:
+  /@nestjs/common/8.4.7_2zg6knnfmllxmxienlo5ktibxe:
     resolution: {integrity: sha512-m/YsbcBal+gA5CFrDpqXqsSfylo+DIQrkFY3qhVIltsYRfu8ct8J9pqsTO6OPf3mvqdOpFGrV5sBjoyAzOBvsw==}
     peerDependencies:
       cache-manager: '*'
@@ -918,6 +924,7 @@ packages:
         optional: true
     dependencies:
       axios: 0.27.2
+      cache-manager: 5.1.4
       iterare: 1.2.1
       reflect-metadata: 0.1.13
       rxjs: 7.5.7
@@ -933,7 +940,7 @@ packages:
       reflect-metadata: ^0.1.13
       rxjs: ^6.0.0 || ^7.2.0
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       dotenv: 16.0.1
       dotenv-expand: 8.0.3
       lodash: 4.17.21
@@ -960,7 +967,7 @@ packages:
       '@nestjs/websockets':
         optional: true
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
@@ -987,7 +994,7 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       reflect-metadata: 0.1.13
     dev: false
 
@@ -997,7 +1004,7 @@ packages:
       '@nestjs/common': ^8.0.0
       '@nestjs/core': ^8.0.0
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
       body-parser: 1.20.0
       cors: 2.8.5
@@ -1054,7 +1061,7 @@ packages:
       class-validator:
         optional: true
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
       '@nestjs/mapped-types': 1.2.0_tqvmdvrjo4ghzq2yoilcfekhea
       js-yaml: 4.1.0
@@ -1077,7 +1084,7 @@ packages:
       '@nestjs/platform-express':
         optional: true
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
       '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
       tslib: 2.4.0
@@ -1753,6 +1760,16 @@ packages:
     transitivePeerDependencies:
       - debug
 
+  /axios/1.2.2:
+    resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /babel-jest/28.1.3_@babel+core@7.19.6:
     resolution: {integrity: sha512-epUaPOEWMk3cWX0M/sPvCHHCe9fMFAa/9hXEgKP8nFfNl/jlGkE9ucq9NqkZGXLDduCJYS0UvSlPUwC0S+rH6Q==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
@@ -1920,6 +1937,12 @@ packages:
   /bytes/3.1.2:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
+
+  /cache-manager/5.1.4:
+    resolution: {integrity: sha512-beXzzuboV6I0AkU25udrd8tRxFbU6c5m7+3eOdmznSVNkyKe0+uTK8EtcuhTwqc/wAYrAGl62w3s58rjKnrO6g==}
+    dependencies:
+      lodash.clonedeep: 4.5.0
+      lru-cache: 7.14.1
 
   /call-bind/1.0.2:
     resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
@@ -2278,6 +2301,10 @@ packages:
     dependencies:
       path-type: 4.0.0
     dev: true
+
+  /discord-api-types/0.37.25:
+    resolution: {integrity: sha512-aCwA2sWnL1zPQgTELkkMzQneuWyCXXUjZCUKswesiE6RDCfOfxAPXOHg6ZTlBA5layPSikGCBBRjyh8S3Wzd+A==}
+    dev: false
 
   /doctrine/3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
@@ -3769,6 +3796,9 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash.clonedeep/4.5.0:
+    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
+
   /lodash.memoize/4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
     dev: true
@@ -3804,6 +3834,10 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /lru-cache/7.14.1:
+    resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
+    engines: {node: '>=12'}
 
   /macos-release/2.5.0:
     resolution: {integrity: sha512-EIgv+QZ9r+814gjJj0Bt5vSLJLzswGmSUbUpbi9AIr/fsN2IWFBl2NucV9PAiek+U1STK468tEkxmVYUtuAN3g==}
@@ -3960,7 +3994,7 @@ packages:
       '@nestjs/common': ^5.0.0 || ^6.6.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
       winston: ^3.0.0
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       fast-safe-stringify: 2.1.1
       winston: 3.8.2
     dev: false
@@ -3971,7 +4005,7 @@ packages:
       '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
       reflect-metadata: ^0.1.12
     dependencies:
-      '@nestjs/common': 8.4.7_yzt46al3aifnexifjjdb4dxxja
+      '@nestjs/common': 8.4.7_2zg6knnfmllxmxienlo5ktibxe
       axios: 0.24.0
       axios-better-stacktrace: 2.1.3_axios@0.24.0
       axios-retry: 3.3.1
@@ -4265,6 +4299,10 @@ packages:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /pump/3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
