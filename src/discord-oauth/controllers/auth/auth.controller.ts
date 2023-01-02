@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  Session,
-} from '@nestjs/common'
+import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import { SessionData } from 'express-session'
@@ -100,6 +91,26 @@ export class AuthController {
     res.redirect(url.toString())
   }
 
+  @ApiOperation({
+    operationId: 'discordOAuthCodeExchange',
+    description:
+      'Consumes the code provided by Discord and logs the user in. This is the final step.',
+    requestBody: {
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              code: {
+                type: 'string',
+                description: 'The access grant code',
+              },
+            },
+          },
+        },
+      },
+    },
+  })
   @PublicRoute()
   @Post()
   async exchangeAccessCode(
