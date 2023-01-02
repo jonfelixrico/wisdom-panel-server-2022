@@ -23,6 +23,7 @@ export class SessionController {
 
     // TODO include user id here
     LOGGER.debug('Logout attempted by user')
+
     await new Promise<void>((resolve, reject) => {
       req.session.destroy((err: Error) => {
         if (err) {
