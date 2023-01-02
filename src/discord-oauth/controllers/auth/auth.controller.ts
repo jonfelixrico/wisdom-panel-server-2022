@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  Session,
+} from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import { SessionData } from 'express-session'
@@ -34,7 +43,7 @@ export class AuthController {
       url: 'https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-authorization-url-example',
       description: 'Check only the "Authorization URL example" part',
     },
-    operationId: 'startDiscordOAuth',
+    operationId: 'discordOAuthStart',
   })
   @PublicRoute()
   @Get()
@@ -50,6 +59,27 @@ export class AuthController {
     res.redirect(this.oauthHelper.generateAuthorizationUrl(stringified))
   }
 
+  @ApiOperation({
+    description:
+      'The Discord OAuth will redirect here once the user has authorized the app.',
+    externalDocs: {
+      url: 'https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-redirect-url-example',
+      description: 'Check only the "Redirect URL example" part',
+    },
+    operationId: 'discordOAuthCallback',
+    parameters: [
+      {
+        in: 'query',
+        name: 'code',
+        schema: {
+          type: 'string',
+        },
+        description:
+          'The OAuth code given to us by the Discord OAuth. This is to be exchanged back to Discord for the access and refresh tokens.',
+        required: true,
+      },
+    ],
+  })
   @PublicRoute()
   @Get('callback')
   async oauthCallback(@Res() res: Response, @Req() req: Request) {
