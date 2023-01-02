@@ -7,7 +7,7 @@ import {
   OAuthHelperService,
 } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 interface CodePayload {
   code: string
@@ -27,9 +27,19 @@ export class AuthController {
     private cfg: ConfigService,
   ) {}
 
+  @ApiOperation({
+    description:
+      'Starts the Authorization Code Grant flow for Discord. This will redirect the user to the Discord auth page. Accepts query params.',
+    externalDocs: {
+      url: 'https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-authorization-url-example',
+      description: 'Check only the "Authorization URL example" part',
+    },
+    operationId: 'startDiscordOAuth',
+  })
   @PublicRoute()
   @Get()
   startOAuth(@Res() res: Response, @Req() req: Request) {
+    // TODO redirect back to FE if already authenticated
     const query = req.query ?? {}
 
     let stringified: string
