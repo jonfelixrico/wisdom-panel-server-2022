@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Post, Req, Res, Session } from '@nestjs/common'
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
-import { SessionData } from 'express-session'
 import {
   AccessToken,
   OAuthHelperService,
@@ -113,11 +112,8 @@ export class AuthController {
   })
   @PublicRoute()
   @Post()
-  async exchangeAccessCode(
-    @Body() { code }: CodePayload,
-    @Session() session: SessionData,
-  ) {
+  async exchangeAccessCode(@Body() { code }: CodePayload, @Req() req: Request) {
     const authToken = await this.oauthHelper.exchangeAccessCode(code)
-    session.tokens = authToken
+    req.session.tokens = authToken
   }
 }

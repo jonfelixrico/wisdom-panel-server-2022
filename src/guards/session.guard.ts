@@ -1,7 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
+import { Request } from 'express'
 import { Observable } from 'rxjs'
-import { DiscordOAuthTokens } from 'src/discord-oauth/types'
 
 export const IS_PUBLIC = 'IS_PUBLIC'
 
@@ -21,10 +26,15 @@ export class SessionGuard implements CanActivate {
       return true
     }
 
-    const req: { session: DiscordOAuthTokens } = context
-      .switchToHttp()
-      .getRequest()
+    const req = context.switchToHttp().getRequest<Request>()
+    if (req?.session?.tokens) {
+      return true
+    }
 
-    return !!req?.session?.refreshToken
+    /*
+     * If we just return false, Nest will throw 403.
+     * We want 401 for no sessions, so we have to throw it explicitly.
+     */
+    throw new UnauthorizedException()
   }
 }
