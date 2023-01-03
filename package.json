@@ -28,6 +28,7 @@
     "@nestjs/swagger": "^6.1.4",
     "axios": "^1.2.2",
     "cache-manager": "^5.1.4",
+    "class-transformer": "^0.5.1",
     "discord-api-types": "^0.37.25",
     "dotenv-defaults": "^5.0.2",
     "express-session": "^1.17.3",
