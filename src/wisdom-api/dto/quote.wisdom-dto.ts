@@ -8,6 +8,6 @@ export interface WisdomApiQuoteDto {
   content: string
   authorId: string
   submitterId: string
-  submitDt: string
+  submitDt: Date
   receives: WisdomApiQuoteReceiveDto[]
 }
