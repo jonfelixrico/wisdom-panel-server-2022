@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common'
 import { QuoteApiService } from 'src/wisdom-api/services/quote-api/quote-api.service'
 import { QuoteDto } from 'src/wisdom-controllers/dto/quote.dto'
 
@@ -12,6 +12,11 @@ export class ServerQuoteController {
     @Param('serverId') serverId: string,
     @Param('quoteId') quoteId: string,
   ): Promise<QuoteDto> {
-    return await this.quoteApi.getQuote(serverId, quoteId)
+    const quote = await this.quoteApi.getQuote(serverId, quoteId)
+    if (!quote) {
+      throw new NotFoundException()
+    }
+
+    return quote
   }
 }
