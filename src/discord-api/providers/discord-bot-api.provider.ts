@@ -5,11 +5,11 @@ import { RouteBases } from 'discord-api-types/v10'
 
 import { Axios } from 'axios'
 
-export class DiscordBotApi extends Axios {}
+export class DiscordBotApiClient extends Axios {}
 
-export function provideDiscordBotApi(): Provider {
+export function provideDiscordBotApiClient(): Provider {
   return {
-    provide: DiscordBotApi,
+    provide: DiscordBotApiClient,
     useFactory(cfg: ConfigService) {
       return axios.create({
         baseURL: RouteBases.api,
