@@ -5,6 +5,7 @@ import { DiscordOauthModule } from './discord-oauth/discord-oauth.module'
 import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
 import { DiscordApiModule } from './discord-api/discord-api.module'
+import { WisdomApiModule } from './wisdom-api/wisdom-api.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DiscordApiModule } from './discord-api/discord-api.module'
     DiscordOauthModule,
     SessionModule,
     DiscordApiModule,
+    WisdomApiModule,
   ],
   controllers: [],
   providers: [
