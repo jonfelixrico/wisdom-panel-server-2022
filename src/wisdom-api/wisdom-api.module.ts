@@ -4,5 +4,6 @@ import { QuoteApiService } from './services/quote-api/quote-api.service'
 
 @Module({
   providers: [provideWisdomApiClient(), QuoteApiService],
+  exports: [QuoteApiService],
 })
 export class WisdomApiModule {}
