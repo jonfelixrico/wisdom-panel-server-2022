@@ -1,5 +1,5 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { QuoteApiService } from 'src/wisdom-api/services/quote-api/quote-api.service'
 import { QuoteDto } from 'src/wisdom-controllers/dto/quote.dto'
 
@@ -11,6 +11,10 @@ export class ServerQuoteController {
   @ApiOperation({
     operationId: 'getQuote',
     summary: 'Get a quote from a server',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Quote not found, or server not found.',
   })
   @Get(':quoteId')
   async getQuote(
