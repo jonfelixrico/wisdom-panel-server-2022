@@ -6,6 +6,7 @@ import { SessionGuard } from './guards/session.guard'
 import { SessionModule } from './session/session.module'
 import { DiscordApiModule } from './discord-api/discord-api.module'
 import { WisdomApiModule } from './wisdom-api/wisdom-api.module'
+import { WisdomControllersModule } from './wisdom-controllers/wisdom-controllers.module'
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { WisdomApiModule } from './wisdom-api/wisdom-api.module'
     SessionModule,
     DiscordApiModule,
     WisdomApiModule,
+    WisdomControllersModule,
   ],
   controllers: [],
   providers: [
