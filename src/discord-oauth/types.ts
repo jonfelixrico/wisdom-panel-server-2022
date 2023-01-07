@@ -1,8 +1,3 @@
-export interface DiscordOAuthTokens {
-  accessToken: string
-  refreshToken: string
-}
-
 export interface DiscordUserOAuth2Credentials {
   accessToken: string
   refreshToken: string
