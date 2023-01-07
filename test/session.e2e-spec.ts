@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from '../src/app.module'
-import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
-import { DateTime } from 'luxon'
+import { mockExpressSession } from './utils/mock-express-session'
 
 describe('SessionController (e2e)', () => {
   let app: INestApplication
@@ -17,26 +16,14 @@ describe('SessionController (e2e)', () => {
   })
 
   it('should return 200 if there is a session', async () => {
-    app.use((req, res, next) => {
-      const credentials: DiscordUserOAuth2Credentials = {
-        accessToken: 'dummy',
-        expiresOn: DateTime.now().plus({ hour: 1 }).toJSDate(),
-        refreshToken: 'dummy',
-        scope: 'dummy',
-        tokenType: 'Bearer',
-      }
-
-      req.session = {
-        credentials,
-      } as any
-      next()
-    })
+    mockExpressSession(app)
     await app.init()
 
     return request(app.getHttpServer()).get('/session').expect(200)
   })
 
   it('should return 401 if there is no session', async () => {
+    // session not mocked so this is going to go 401 automatically
     await app.init()
 
     return request(app.getHttpServer()).get('/session').expect(401)
