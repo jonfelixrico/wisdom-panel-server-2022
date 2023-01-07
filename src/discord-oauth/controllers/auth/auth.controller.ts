@@ -30,6 +30,7 @@ export class AuthController {
         schema: {
           type: 'string',
         },
+        required: false,
       },
     ],
   })
