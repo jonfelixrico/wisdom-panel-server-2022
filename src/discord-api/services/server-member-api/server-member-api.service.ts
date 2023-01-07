@@ -23,9 +23,18 @@ export class ServerMemberApiService {
         )
         return data
       } catch (e) {
+        // handle user not being a member of the server
         if (isAxiosError(e) && e.status === HttpStatus.NOT_FOUND) {
           return null
         }
+
+        /*
+         * TODO do the following tests to make the handling more robust
+         * - try to access server that that bot does not have access to
+         * - try to access a nonexistent server
+         * - try to access a nonexistent user
+         * - try to access a user which doesnt belong to the server
+         */
 
         throw e
       }
