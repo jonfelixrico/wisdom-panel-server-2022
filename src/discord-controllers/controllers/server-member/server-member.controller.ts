@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
-import { getMemberAvatarUrl } from 'src/discord-api/utils/avatar.utils'
+import { getMemberAvatarUrl } from 'src/discord-api/utils/avatar.util'
 import { ServerMemberDto } from './server-member.dto'
 
 @ApiTags('discord')
