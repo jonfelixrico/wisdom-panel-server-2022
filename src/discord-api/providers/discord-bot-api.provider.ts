@@ -23,7 +23,8 @@ export function provideDiscordBotApiClient(): Provider {
         (res) => res,
         (err) => {
           if (isDiscordError(err)) {
-            err.message = `${err.response.data.message} (${err.response.data.code})`
+            const { data } = err.response
+            err.message = `${data.message ?? err.message} (${data.code})`
           }
 
           return Promise.reject(err)
