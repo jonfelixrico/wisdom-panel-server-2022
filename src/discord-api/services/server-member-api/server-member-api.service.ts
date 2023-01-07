@@ -24,7 +24,11 @@ export class ServerMemberApiService {
         if (!isDiscordError(e)) {
           this.LOGGER.error(e.message, e.stack, 'Generic error')
         } else {
-          this.LOGGER.error(e.message, e.stack, 'Discord API error')
+          this.LOGGER.error(
+            e.response.data.message,
+            e.stack,
+            'Discord API error',
+          )
         }
 
         // this is to just simplify the checking -- if erroneous, then bot is not a member
