@@ -66,7 +66,7 @@ describe('avatar utils', () => {
       expect(url).toContain('gif')
     })
 
-    it('should fall back to the default avatar if the user has no avatar', () => {
+    test('fallback to default avatar if user didnt have any', () => {
       const url = getUserAvatarUrl({
         avatar: null,
         discriminator: '1234',
