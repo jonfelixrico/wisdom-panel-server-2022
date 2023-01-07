@@ -27,6 +27,7 @@ specifiers:
   eslint-plugin-prettier: ^4.0.0
   express-session: ^1.17.3
   jest: 28.0.3
+  luxon: ^3.2.1
   nest-winston: ^1.8.0
   nestjs-http-promise: ^2.0.0
   prettier: ^2.3.2
@@ -56,6 +57,7 @@ dependencies:
   discord-api-types: 0.37.25
   dotenv-defaults: 5.0.2
   express-session: 1.17.3
+  luxon: 3.2.1
   nest-winston: 1.8.0_5rqplkgjo3qfqjv34ceyw5sx3m
   nestjs-http-promise: 2.0.0_tqvmdvrjo4ghzq2yoilcfekhea
   qs: 6.11.0
@@ -3846,6 +3848,11 @@ packages:
   /lru-cache/7.14.1:
     resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
     engines: {node: '>=12'}
+
+  /luxon/3.2.1:
+    resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
+    engines: {node: '>=12'}
+    dev: false
 
   /macos-release/2.5.0:
     resolution: {integrity: sha512-EIgv+QZ9r+814gjJj0Bt5vSLJLzswGmSUbUpbi9AIr/fsN2IWFBl2NucV9PAiek+U1STK468tEkxmVYUtuAN3g==}
