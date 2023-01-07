@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { ServerMemberApiService } from 'src/discord-api/services/server-member-repository/server-member-repository.service'
+import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
 import { getMemberAvatarUrl } from 'src/discord-api/utils/avatar.utils'
 import { ServerMemberDto } from './server-member.dto'
 

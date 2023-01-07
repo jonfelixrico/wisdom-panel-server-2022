@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { ServerMemberApiService } from './server-member-repository.service'
+import { ServerMemberApiService } from './server-member-api.service'
 
 describe('ServerMemberApiService', () => {
   let service: ServerMemberApiService
