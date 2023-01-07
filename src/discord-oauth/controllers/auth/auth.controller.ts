@@ -2,7 +2,7 @@ import { Controller, Get, Logger, Query, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
-import { PublicRoute } from 'src/guards/public-route.decorator'
+import { PublicRoute } from 'src/decorators/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('OAuth')
