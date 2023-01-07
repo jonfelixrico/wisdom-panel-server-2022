@@ -25,9 +25,10 @@ import { InjectSessionUserDiscordApiClientInterceptor } from './discord-api/inte
   ],
   controllers: [],
   providers: [
+    SessionGuard,
     {
       provide: APP_GUARD,
-      useClass: SessionGuard,
+      useExisting: SessionGuard,
     },
     {
       provide: APP_INTERCEPTOR,
