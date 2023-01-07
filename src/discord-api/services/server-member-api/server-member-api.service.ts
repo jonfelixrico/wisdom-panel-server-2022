@@ -16,7 +16,9 @@ export class ServerMemberApiService {
     serverId: string,
     userId: string,
   ): Promise<RESTGetAPIGuildMemberResult | null> {
-    return this.cache.wrap(`server/${serverId}/user/${userId}`, async () => {
+    return await this.cache.wrap(
+      `server/${serverId}/user/${userId}`,
+      async () => {
       try {
         const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(
           Routes.guildMember(serverId, userId),
@@ -38,6 +40,7 @@ export class ServerMemberApiService {
 
         throw e
       }
-    })
+      },
+    )
   }
 }
