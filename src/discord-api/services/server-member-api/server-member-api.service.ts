@@ -21,12 +21,7 @@ export class ServerMemberApiService {
         await this.api.get(Routes.guild(serverId))
         return true
       } catch (e) {
-        if (
-          isDiscordError(e) &&
-          [HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN].includes(
-            e.response.status,
-          )
-        ) {
+        if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
           return false
         }
 
@@ -49,12 +44,7 @@ export class ServerMemberApiService {
           return data
         } catch (e) {
           // handle user not being a member of the server
-          if (
-            isDiscordError(e) &&
-            [HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN].includes(
-              e.response.status,
-            )
-          ) {
+          if (isDiscordError(e) && e.response.status === HttpStatus.NOT_FOUND) {
             return null
           }
 
