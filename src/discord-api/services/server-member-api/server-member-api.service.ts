@@ -22,21 +22,12 @@ export class ServerMemberApiService {
         return true
       } catch (e) {
         if (!isDiscordError(e)) {
-          throw e
+          this.LOGGER.error(e.message, e.stack, 'Generic error')
+        } else {
+          this.LOGGER.error(e.message, e.stack, 'Discord API error')
         }
 
-        if (
-          !(
-            e.status === HttpStatus.NOT_FOUND ||
-            e.status === HttpStatus.FORBIDDEN
-          )
-        ) {
-          throw e
-        }
-
-        this.LOGGER.debug(
-          `Encountered error ${e.status} (code: ${e.response.data.code}) while trying to check for bot membership`,
-        )
+        // this is to just simplify the checking -- if erroneous, then bot is not a member
         return false
       }
     })
