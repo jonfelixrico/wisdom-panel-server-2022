@@ -3,7 +3,6 @@ import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.p
 import { DISCORD_BOT_CACHE } from 'src/discord-api/providers/discord-bot-cache.provider'
 import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
-import { isAxiosError } from 'axios'
 import { isDiscordError } from 'src/discord-api/utils/api-client.util'
 
 @Injectable()
@@ -16,23 +15,22 @@ export class ServerMemberApiService {
   ) {}
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
+    // TODO move this to server API
     return this.cache.wrap(`server/${serverId}/user/bot`, async () => {
       try {
-        await this.api.head(Routes.userGuildMember(serverId))
+        await this.api.get(Routes.guild(serverId))
         return true
       } catch (e) {
-        if (!isDiscordError(e)) {
-          this.LOGGER.error(e.message, e.stack, 'Generic error')
-        } else {
-          this.LOGGER.error(
-            e.response.data.message,
-            e.stack,
-            'Discord API error',
+        if (
+          isDiscordError(e) &&
+          [HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN].includes(
+            e.response.status,
           )
+        ) {
+          return false
         }
 
-        // this is to just simplify the checking -- if erroneous, then bot is not a member
-        return false
+        throw e
       }
     })
   }
@@ -51,7 +49,12 @@ export class ServerMemberApiService {
           return data
         } catch (e) {
           // handle user not being a member of the server
-          if (isAxiosError(e) && e.status === HttpStatus.NOT_FOUND) {
+          if (
+            isDiscordError(e) &&
+            [HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN].includes(
+              e.response.status,
+            )
+          ) {
             return null
           }
 
