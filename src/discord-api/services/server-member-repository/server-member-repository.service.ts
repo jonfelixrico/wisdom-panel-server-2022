@@ -5,7 +5,7 @@ import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
 
 @Injectable()
-export class ServerMemberRepositoryService {
+export class ServerMemberApiService {
   constructor(
     private api: DiscordBotApiClient,
     @Inject(DISCORD_BOT_CACHE) private cache: Cache,
