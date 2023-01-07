@@ -15,10 +15,14 @@ function getFormat(hash: string) {
   return ImageFormat.PNG
 }
 
-export function getMemberAvatarUrl(
-  serverId: string,
-  member: APIGuildMember,
-): string {
+type User = Pick<APIUser, 'avatar' | 'id' | 'discriminator'>
+
+interface Member extends Pick<APIGuildMember, 'avatar'> {
+  user?: User
+  avatar?: string
+}
+
+export function getMemberAvatarUrl(serverId: string, member: Member): string {
   if (member.avatar) {
     return new URL(
       CDNRoutes.guildMemberAvatar(
@@ -34,7 +38,7 @@ export function getMemberAvatarUrl(
   return getUserAvatarUrl(member.user)
 }
 
-export function getUserAvatarUrl(user: APIUser): string {
+export function getUserAvatarUrl(user: User): string {
   if (user.avatar) {
     // user has an avatar
     return new URL(

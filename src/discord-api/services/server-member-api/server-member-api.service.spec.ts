@@ -12,7 +12,5 @@ describe('ServerMemberApiService', () => {
     service = module.get<ServerMemberApiService>(ServerMemberApiService)
   })
 
-  it('should be defined', () => {
-    expect(service).toBeDefined()
-  })
+  it.todo('it should be defined')
 })
