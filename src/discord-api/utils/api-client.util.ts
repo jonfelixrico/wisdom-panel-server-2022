@@ -16,7 +16,6 @@ export type DiscordError = AxiosError<{
 }>
 
 export function isDiscordError(e: unknown): e is DiscordError {
-  console.debug(e)
   if (
     !isAxiosError<{
       code: unknown
