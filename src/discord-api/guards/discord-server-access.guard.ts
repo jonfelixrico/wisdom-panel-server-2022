@@ -11,9 +11,10 @@ import { ServerMemberApiService } from 'src/discord-api/services/server-member-a
 export const SERVER_ID_PARAM_KEY = Symbol()
 
 /**
- * Derived from https://docs.nestjs.com/guards#putting-it-all-together
+ * Checks if both the Discord application (bot) and the session user have access
+ * to the specified server.
  *
- * Simply checks if the user is authenticated and has a session.
+ * SERVER_ID_PARAM_KEY needs to be found in the metadata for this to work.
  */
 @Injectable()
 export class DiscordServerAccessGuard implements CanActivate {
@@ -45,7 +46,6 @@ export class DiscordServerAccessGuard implements CanActivate {
     }
 
     // TODO add checking for user server access
-
     return true
   }
 }
