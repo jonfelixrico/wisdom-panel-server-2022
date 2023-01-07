@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
@@ -34,6 +39,13 @@ export class DiscordServerAccessGuard implements CanActivate {
       )
     }
 
-    return await this.serverMemberApi.isBotMemberOf(serverId)
+    if (!(await this.serverMemberApi.isBotMemberOf(serverId))) {
+      // TODO add code do distinguish bot-no-acccess from user-no-access
+      throw new ForbiddenException()
+    }
+
+    // TODO add checking for user server access
+
+    return true
   }
 }
