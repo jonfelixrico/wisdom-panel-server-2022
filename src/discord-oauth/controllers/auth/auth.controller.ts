@@ -40,7 +40,7 @@ export class AuthController {
     @Query('state') state: string,
     @Req() req: Request,
   ) {
-    if (req.session?.tokens) {
+    if (req.session?.credentials) {
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else {
       res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
@@ -113,7 +113,7 @@ export class AuthController {
     @Req() req: Request,
     @Query() query: Record<string, string>,
   ) {
-    if (req.session.tokens) {
+    if (req.session.credentials) {
       // Handling for already-authenticated users
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else if (query.code) {
@@ -122,7 +122,7 @@ export class AuthController {
 
       // Establish the session
       const authToken = await this.oauthHelper.exchangeAccessCode(code)
-      req.session.tokens = authToken
+      req.session.credentials = authToken
 
       /*
        * Need to call session.save manually because it will not get called automatically by the framework if
