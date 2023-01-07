@@ -1,21 +1,10 @@
 import { RESTPostOAuth2AccessTokenResult } from 'discord-api-types/v10'
 import { DateTime } from 'luxon'
+import { DiscordUserOAuth2Credentials } from '../types'
 
-export interface TokenData {
-  accessToken: string
-  refreshToken: string
-  scope: string
-  tokenType: string
-
-  /**
-   * The date of when the access token will expire.
-   */
-  expiresOn: Date
-}
-
-export function formatAuthorizationResponse(
+export function formatOAuth2Result(
   res: RESTPostOAuth2AccessTokenResult,
-): TokenData {
+): DiscordUserOAuth2Credentials {
   return {
     accessToken: res.access_token,
     refreshToken: res.refresh_token,
