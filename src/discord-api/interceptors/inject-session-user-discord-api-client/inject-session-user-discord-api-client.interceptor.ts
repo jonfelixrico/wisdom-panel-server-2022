@@ -18,8 +18,12 @@ export class InjectSessionUserDiscordApiClientInterceptor
     }
 
     const req = context.switchToHttp().getRequest<Request>()
+    const credentials = req.session?.credentials
 
-    // should always have a value since this should come after an auth guard
+    if (!credentials) {
+      return next.handle()
+    }
+
     const { accessToken, tokenType } = req.session.credentials
     // TODO impl refresh token
     req.sessionUserDiscordApi = createClient(accessToken, tokenType)
