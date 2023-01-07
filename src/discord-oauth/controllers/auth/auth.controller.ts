@@ -4,13 +4,6 @@ import { Request, Response } from 'express'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/guards/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
-
-declare module 'express-session' {
-  interface SessionData {
-    tokens: DiscordUserOAuth2Credentials
-  }
-}
 
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
