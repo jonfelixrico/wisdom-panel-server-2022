@@ -1,18 +1,9 @@
 import { Controller, Get, Logger, Query, Req, Res } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
-import {
-  AccessToken,
-  OAuthHelperService,
-} from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
-import { PublicRoute } from 'src/guards/public-route.decorator'
+import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
+import { PublicRoute } from 'src/decorators/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
-
-declare module 'express-session' {
-  interface SessionData {
-    tokens: AccessToken
-  }
-}
 
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
@@ -39,6 +30,7 @@ export class AuthController {
         schema: {
           type: 'string',
         },
+        required: false,
       },
     ],
   })
@@ -49,7 +41,7 @@ export class AuthController {
     @Query('state') state: string,
     @Req() req: Request,
   ) {
-    if (req.session?.tokens) {
+    if (req.session?.credentials) {
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else {
       res.redirect(this.oauthHelper.generateAuthorizationUrl(state))
@@ -122,7 +114,7 @@ export class AuthController {
     @Req() req: Request,
     @Query() query: Record<string, string>,
   ) {
-    if (req.session.tokens) {
+    if (req.session.credentials) {
       // Handling for already-authenticated users
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else if (query.code) {
@@ -131,7 +123,7 @@ export class AuthController {
 
       // Establish the session
       const authToken = await this.oauthHelper.exchangeAccessCode(code)
-      req.session.tokens = authToken
+      req.session.credentials = authToken
 
       /*
        * Need to call session.save manually because it will not get called automatically by the framework if
