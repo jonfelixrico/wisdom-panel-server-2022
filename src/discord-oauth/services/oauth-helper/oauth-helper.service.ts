@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import {
+  RESTPostOAuth2AccessTokenResult,
+  RESTPostOAuth2AccessTokenURLEncodedData,
+} from 'discord-api-types/v10'
 import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
+import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
+import { formatOAuth2Result } from 'src/discord-oauth/utils/token.util'
 
 interface Params {
   clientId: string
@@ -11,22 +17,6 @@ interface Params {
 
   authorizationUrl: string
   tokenUrl: string
-}
-
-interface AccessTokenResp {
-  access_token: string
-  token_type: string
-  expires_in: number
-  refresh_token: string
-  scope: string
-}
-
-export interface AccessToken {
-  accessToken: string
-  tokenType: string
-  expiresIn: number
-  refreshToken: string
-  scope: string
 }
 
 @Injectable()
@@ -67,18 +57,22 @@ export class OAuthHelperService {
     return url.toString()
   }
 
-  async exchangeAccessCode(code: string): Promise<AccessToken> {
-    const { tokenUrl, clientId, clientSecret, scope, callbackUrl } = this.config
+  async exchangeAccessCode(
+    code: string,
+  ): Promise<DiscordUserOAuth2Credentials> {
+    const { tokenUrl, clientId, clientSecret, callbackUrl } = this.config
 
-    const { data } = await this.http.post<AccessTokenResp>(
+    const reqData: RESTPostOAuth2AccessTokenURLEncodedData = {
+      grant_type: 'authorization_code',
+      client_id: clientId,
+      client_secret: clientSecret,
+      code,
+      redirect_uri: callbackUrl,
+    }
+
+    const { data } = await this.http.post<RESTPostOAuth2AccessTokenResult>(
       tokenUrl,
-      stringify({
-        grant_type: 'authorization_code',
-        client_id: clientId,
-        client_secret: clientSecret,
-        code,
-        redirect_uri: callbackUrl,
-      }),
+      stringify(reqData),
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -86,13 +80,6 @@ export class OAuthHelperService {
       },
     )
 
-    const { access_token, expires_in, refresh_token, token_type } = data
-    return {
-      accessToken: access_token,
-      expiresIn: expires_in,
-      refreshToken: refresh_token,
-      scope,
-      tokenType: token_type,
-    }
+    return formatOAuth2Result(data)
   }
 }
