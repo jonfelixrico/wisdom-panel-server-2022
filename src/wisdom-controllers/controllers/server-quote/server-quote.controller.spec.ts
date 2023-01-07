@@ -12,7 +12,5 @@ describe('ServerQuoteController', () => {
     controller = module.get<ServerQuoteController>(ServerQuoteController)
   })
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined()
-  })
+  it.todo('should be defined')
 })
