@@ -4,6 +4,8 @@ import { Request, Response } from 'express'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/decorators/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createClient } from 'src/discord-api/utils/api-client.util'
+import { RESTGetAPICurrentUserResult, Routes } from 'discord-api-types/v10'
 
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
@@ -122,8 +124,18 @@ export class AuthController {
       const { code, state } = query
 
       // Establish the session
-      const authToken = await this.oauthHelper.exchangeAccessCode(code)
-      req.session.credentials = authToken
+      const exchangeResults = await this.oauthHelper.exchangeAccessCode(code)
+
+      const client = createClient(
+        exchangeResults.accessToken,
+        exchangeResults.tokenType,
+      )
+      const { data } = await client.get<RESTGetAPICurrentUserResult>(
+        Routes.user(),
+      )
+
+      req.session.credentials = exchangeResults
+      req.session.userId = data.id
 
       /*
        * Need to call session.save manually because it will not get called automatically by the framework if
