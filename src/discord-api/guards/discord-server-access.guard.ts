@@ -45,7 +45,16 @@ export class DiscordServerAccessGuard implements CanActivate {
       throw new ForbiddenException()
     }
 
-    // TODO add checking for user server access
+    if (
+      !(await this.serverMemberApi.isUserMemberOf(
+        req.sessionUserDiscordApi,
+        serverId,
+      ))
+    ) {
+      // TODO add code do distinguish bot-no-acccess from user-no-access
+      throw new ForbiddenException()
+    }
+
     return true
   }
 }

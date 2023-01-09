@@ -4,9 +4,11 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
+import { Axios } from 'axios'
 import { Request } from 'express'
 import { Observable } from 'rxjs'
 import { createClient } from 'src/discord-api/utils/api-client.util'
+import { SessionUserDiscordApiClient } from './session-user-discord-api-client.class'
 
 @Injectable()
 export class InjectSessionUserDiscordApiClientInterceptor
@@ -18,15 +20,19 @@ export class InjectSessionUserDiscordApiClientInterceptor
     }
 
     const req = context.switchToHttp().getRequest<Request>()
-    const credentials = req.session?.credentials
-
-    if (!credentials) {
+    if (!req.session?.userId) {
       return next.handle()
     }
 
     const { accessToken, tokenType } = req.session.credentials
     // TODO impl refresh token
-    req.sessionUserDiscordApi = createClient(accessToken, tokenType)
+    const client = createClient(accessToken, tokenType)
+    req.sessionUserDiscordApi = Object.assign<
+      Axios,
+      Pick<SessionUserDiscordApiClient, 'userId'>
+    >(client, {
+      userId: req.session.userId,
+    })
 
     return next.handle()
   }

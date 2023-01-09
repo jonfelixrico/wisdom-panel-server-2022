@@ -4,6 +4,8 @@ import { Request, Response } from 'express'
 import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 import { PublicRoute } from 'src/decorators/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import { createClient } from 'src/discord-api/utils/api-client.util'
+import { RESTGetAPICurrentUserResult, Routes } from 'discord-api-types/v10'
 
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
@@ -114,16 +116,31 @@ export class AuthController {
     @Req() req: Request,
     @Query() query: Record<string, string>,
   ) {
+    const { LOGGER } = this
+
     if (req.session.credentials) {
       // Handling for already-authenticated users
+      LOGGER.debug('Session detected, redirected to FE url.')
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
     } else if (query.code) {
       // OAuth was successful
       const { code, state } = query
 
       // Establish the session
-      const authToken = await this.oauthHelper.exchangeAccessCode(code)
-      req.session.credentials = authToken
+      const exchangeResults = await this.oauthHelper.exchangeAccessCode(code)
+      LOGGER.debug('OAuth code exchange was successful.')
+
+      const client = createClient(
+        exchangeResults.accessToken,
+        exchangeResults.tokenType,
+      )
+      const { data } = await client.get<RESTGetAPICurrentUserResult>(
+        Routes.user(),
+      )
+
+      req.session.credentials = exchangeResults
+      req.session.userId = data.id
+      LOGGER.log(`Logged in user ${req.session.userId}`)
 
       /*
        * Need to call session.save manually because it will not get called automatically by the framework if
@@ -132,6 +149,10 @@ export class AuthController {
       await new Promise<void>((resolve, reject) => {
         req.session.save((err) => {
           if (err) {
+            LOGGER.error(
+              `Error encountered while trying to save the session: ${err.message}`,
+              err.stack,
+            )
             reject(err)
           } else {
             resolve()
@@ -139,11 +160,13 @@ export class AuthController {
         })
       })
 
+      LOGGER.debug('Redirecting to FE.')
       // Redirect to FE
       res.redirect(this.buildFrontEndRedirectUrl(state))
     } else if (query.error) {
       // OAuth failed
       const { error, error_description: errorDescription, state } = query
+      LOGGER.warn(`Received error code ${error}`)
       res.redirect(
         this.buildFrontEndRedirectUrl(state, { error, errorDescription }),
       )
