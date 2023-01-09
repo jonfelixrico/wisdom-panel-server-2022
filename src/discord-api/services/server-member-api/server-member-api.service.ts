@@ -65,17 +65,20 @@ export class ServerMemberApiService {
     client: SessionUserDiscordApiClient,
     serverId: string,
   ): Promise<boolean> {
-    return this.cache.wrap(`user:server/${serverId}/user/@me`, async () => {
-      try {
-        await client.get(Routes.userGuildMember(serverId))
-        return true
-      } catch (e) {
-        if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
-          return false
-        }
+    return this.cache.wrap(
+      `user@${client.userId}:server/${serverId}/user/@me`,
+      async () => {
+        try {
+          await client.get(Routes.userGuildMember(serverId))
+          return true
+        } catch (e) {
+          if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
+            return false
+          }
 
-        throw e
-      }
-    })
+          throw e
+        }
+      },
+    )
   }
 }
