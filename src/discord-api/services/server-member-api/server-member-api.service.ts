@@ -4,6 +4,7 @@ import { DISCORD_BOT_CACHE } from 'src/discord-api/providers/discord-bot-cache.p
 import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
 import { isDiscordError } from 'src/discord-api/utils/api-client.util'
+import { SessionuserDiscordApiClient } from 'src/discord-api/interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
 
 @Injectable()
 export class ServerMemberApiService {
@@ -14,7 +15,7 @@ export class ServerMemberApiService {
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
     // TODO move this to server API
-    return this.cache.wrap(`server/${serverId}/user/bot`, async () => {
+    return this.cache.wrap(`bot:server/${serverId}/user/@me`, async () => {
       try {
         await this.api.get(Routes.guild(serverId))
         return true
@@ -58,5 +59,23 @@ export class ServerMemberApiService {
         }
       },
     )
+  }
+
+  async isUserMemberOf(
+    client: SessionuserDiscordApiClient,
+    serverId: string,
+  ): Promise<boolean> {
+    return this.cache.wrap(`user:server/${serverId}/user/@me`, async () => {
+      try {
+        await client.get(Routes.userGuildMember(serverId))
+        return true
+      } catch (e) {
+        if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
+          return false
+        }
+
+        throw e
+      }
+    })
   }
 }
