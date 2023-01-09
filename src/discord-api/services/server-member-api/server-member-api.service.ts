@@ -1,6 +1,6 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
-import { DISCORD_BOT_CACHE } from 'src/discord-api/providers/discord-bot-cache.provider'
+import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
 import { isDiscordError } from 'src/discord-api/utils/api-client.util'
@@ -10,7 +10,7 @@ import { SessionUserDiscordApiClient } from 'src/discord-api/interceptors/inject
 export class ServerMemberApiService {
   constructor(
     private api: DiscordBotApiClient,
-    @Inject(DISCORD_BOT_CACHE) private cache: Cache,
+    @Inject(DISCORD_API_CACHE) private cache: Cache,
   ) {}
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
