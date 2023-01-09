@@ -4,7 +4,7 @@ import { DISCORD_BOT_CACHE } from 'src/discord-api/providers/discord-bot-cache.p
 import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
 import { isDiscordError } from 'src/discord-api/utils/api-client.util'
-import { SessionuserDiscordApiClient } from 'src/discord-api/interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
+import { SessionUserDiscordApiClient } from 'src/discord-api/interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
 
 @Injectable()
 export class ServerMemberApiService {
@@ -62,7 +62,7 @@ export class ServerMemberApiService {
   }
 
   async isUserMemberOf(
-    client: SessionuserDiscordApiClient,
+    client: SessionUserDiscordApiClient,
     serverId: string,
   ): Promise<boolean> {
     return this.cache.wrap(`user:server/${serverId}/user/@me`, async () => {
