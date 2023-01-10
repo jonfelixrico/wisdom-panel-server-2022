@@ -6,6 +6,7 @@ import { PublicRoute } from 'src/decorators/public-route.decorator'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { createClient } from 'src/discord-api/utils/api-client.util'
 import { RESTGetAPICurrentUserResult, Routes } from 'discord-api-types/v10'
+import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
 
 @ApiTags('OAuth')
 @Controller('auth/oauth/discord')
@@ -70,6 +71,18 @@ export class AuthController {
     return url.toString()
   }
 
+  async fetchUserIdUsingToken(exchangeResults: DiscordUserOAuth2Credentials) {
+    const client = createClient(
+      exchangeResults.accessToken,
+      exchangeResults.tokenType,
+    )
+    const { data } = await client.get<RESTGetAPICurrentUserResult>(
+      Routes.user(),
+    )
+
+    return data.id
+  }
+
   @ApiOperation({
     description:
       'The Discord OAuth will redirect here once the user has authorized the app.',
@@ -130,16 +143,8 @@ export class AuthController {
       const exchangeResults = await this.oauthHelper.exchangeAccessCode(code)
       LOGGER.debug('OAuth code exchange was successful.')
 
-      const client = createClient(
-        exchangeResults.accessToken,
-        exchangeResults.tokenType,
-      )
-      const { data } = await client.get<RESTGetAPICurrentUserResult>(
-        Routes.user(),
-      )
-
       req.session.credentials = exchangeResults
-      req.session.userId = data.id
+      req.session.userId = await this.fetchUserIdUsingToken(exchangeResults)
       LOGGER.log(`Logged in user ${req.session.userId}`)
 
       /*
