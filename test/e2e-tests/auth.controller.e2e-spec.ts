@@ -50,7 +50,7 @@ describe('AuthController (e2e)', () => {
     })
   })
 
-  describe('GET auth/oauth/discord/callback', () => {
+  describe('GET auth/oauth/discord/callback -- error cases', () => {
     it.todo(
       'should redirect to FE with error query params and state if an error was received',
     )
@@ -58,10 +58,10 @@ describe('AuthController (e2e)', () => {
     it.todo(
       'should redirect to FE with badRequest query params if misuse is detected',
     )
+  })
 
-    describe('oauth success', () => {
-      it.todo('should redirect to FE with state')
-      it.todo('should create a session')
-    })
+  describe('GET auth/oauth/discord/callback -- success cases', () => {
+    it.todo('should redirect to FE with state')
+    it.todo('should create a session')
   })
 })
