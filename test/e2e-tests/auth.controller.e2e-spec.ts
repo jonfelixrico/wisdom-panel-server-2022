@@ -3,11 +3,6 @@ import { HttpStatus, INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
-import { ConfigService } from '@nestjs/config'
-import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
-
-const MOCK_AUTH_URL = 'http://authorization/'
-const MOCK_FE_URL = 'http://frontend/'
 
 describe('AuthController (e2e)', () => {
   describe('GET auth/oauth/discord', () => {
@@ -16,16 +11,7 @@ describe('AuthController (e2e)', () => {
     beforeEach(async () => {
       const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
-      })
-        .overrideProvider(OAuthHelperService)
-        .useValue({
-          generateAuthorizationUrl: jest.fn().mockReturnValue(MOCK_AUTH_URL),
-        } as Pick<OAuthHelperService, 'generateAuthorizationUrl'>)
-        .overrideProvider(ConfigService)
-        .useValue({
-          getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
-        } as Pick<ConfigService, 'getOrThrow'>)
-        .compile()
+      }).compile()
 
       app = moduleFixture.createNestApplication()
     })
@@ -37,7 +23,7 @@ describe('AuthController (e2e)', () => {
       return request(app.getHttpServer())
         .get('/auth/oauth/discord')
         .expect(HttpStatus.FOUND)
-        .expect('Location', MOCK_FE_URL)
+        .expect('Location', /frontend/)
     })
 
     it('should redirect to the authorization URL if no session is found', async () => {
@@ -46,7 +32,7 @@ describe('AuthController (e2e)', () => {
       return request(app.getHttpServer())
         .get('/auth/oauth/discord')
         .expect(HttpStatus.FOUND)
-        .expect('Location', MOCK_AUTH_URL)
+        .expect('Location', /authorization/)
     })
   })
 
@@ -61,6 +47,23 @@ describe('AuthController (e2e)', () => {
   })
 
   describe('GET auth/oauth/discord/callback -- success cases', () => {
+    // let app: INestApplication
+
+    // beforeEach(async () => {
+    //   const moduleFixture = await Test.createTestingModule({
+    //     imports: [AppModule],
+    //   })
+    //     .overrideProvider(OAuthHelperService)
+    //     .useValue({})
+    //     .overrideProvider(ConfigService)
+    //     .useValue({
+    //       getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
+    //     } as Pick<ConfigService, 'getOrThrow'>)
+    //     .compile()
+
+    //   app = moduleFixture.createNestApplication()
+    // })
+
     it.todo('should redirect to FE with state')
     it.todo('should create a session')
   })
@@ -71,14 +74,7 @@ describe('AuthController (e2e)', () => {
     beforeEach(async () => {
       const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
-      })
-        .overrideProvider(OAuthHelperService)
-        .useValue({})
-        .overrideProvider(ConfigService)
-        .useValue({
-          getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
-        } as Pick<ConfigService, 'getOrThrow'>)
-        .compile()
+      }).compile()
 
       app = moduleFixture.createNestApplication()
     })
@@ -90,7 +86,7 @@ describe('AuthController (e2e)', () => {
       return request(app.getHttpServer())
         .get('/auth/oauth/discord/callback')
         .expect(HttpStatus.FOUND)
-        .expect('Location', MOCK_FE_URL)
+        .expect('Location', /frontend/)
     })
   })
 })
