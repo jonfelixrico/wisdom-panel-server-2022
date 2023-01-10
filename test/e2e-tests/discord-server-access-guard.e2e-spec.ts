@@ -11,7 +11,8 @@ jest.spyOn(avatarUtil, 'getMemberAvatarUrl').mockImplementation(() => '')
 
 describe('DiscordServerAccessGuard (e2e)', () => {
   let app: INestApplication
-  let api: ServerMemberApiService
+  let isBotMemberOf: jest.SpyInstance
+  let isUserMemberOf: jest.SpyInstance
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,7 +22,7 @@ describe('DiscordServerAccessGuard (e2e)', () => {
     app = moduleFixture.createNestApplication()
     mockExpressSession(app)
 
-    api = app.get(ServerMemberApiService)
+    const api = app.get(ServerMemberApiService)
     jest.spyOn(api, 'getMember').mockImplementation(() =>
       Promise.resolve({
         nick: 'dummy',
@@ -30,18 +31,15 @@ describe('DiscordServerAccessGuard (e2e)', () => {
         },
       } as RESTGetAPIGuildMemberResult),
     )
+    isBotMemberOf = jest.spyOn(api, 'isBotMemberOf')
+    isUserMemberOf = jest.spyOn(api, 'isUserMemberOf')
 
     await app.init()
   })
 
   it('should return status 200 if both bot and user have access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
+    isBotMemberOf.mockResolvedValue(true)
+    isUserMemberOf.mockResolvedValue(true)
 
     return request(app.getHttpServer())
       .get('/server/dummy/user/dummy')
@@ -49,13 +47,8 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 403 if only user has access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
+    isBotMemberOf.mockResolvedValue(false)
+    isUserMemberOf.mockResolvedValue(true)
 
     return request(app.getHttpServer())
       .get('/server/dummy/user/dummy')
@@ -63,13 +56,8 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 403 if only bot has access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
+    isBotMemberOf.mockResolvedValue(true)
+    isUserMemberOf.mockResolvedValue(false)
 
     return request(app.getHttpServer())
       .get('/server/dummy/user/dummy')
@@ -77,13 +65,8 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 403 if neither have access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
+    isBotMemberOf.mockResolvedValue(false)
+    isUserMemberOf.mockResolvedValue(false)
 
     return request(app.getHttpServer())
       .get('/server/dummy/user/dummy')
