@@ -10,11 +10,19 @@ import { WisdomControllersModule } from './wisdom-controllers/wisdom-controllers
 import { DiscordControllersModule } from './discord-controllers/discord-controllers.module'
 import { InjectSessionUserDiscordApiClientInterceptor } from './discord-api/interceptors/inject-session-user-discord-api-client/inject-session-user-discord-api-client.interceptor'
 
+function setUpEnvFilePath(): string[] {
+  if (process.env.NODE_ENV === 'test') {
+    return ['.env.test', '.env.defaults']
+  }
+
+  return ['.env', '.env.defaults']
+}
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.defaults'],
+      envFilePath: setUpEnvFilePath(),
     }),
     DiscordOauthModule,
     SessionModule,
