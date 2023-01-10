@@ -1,24 +1,60 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { INestApplication } from '@nestjs/common'
+import { HttpStatus, INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
 import { ConfigService } from '@nestjs/config'
+import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
 
 describe('AuthController (e2e)', () => {
-  let app: INestApplication
-
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile()
-
-    app = moduleFixture.createNestApplication()
-  })
-
   describe('GET auth/oauth/discord', () => {
-    it.todo('should redirect to FE if there is already a session')
-    it.todo('should redirect to the authorization URL if no session is found')
+    let app: INestApplication
+
+    const MOCK_AUTH_URL = 'http://authorization/'
+    const MOCK_FE_URL = 'http://frontend/'
+
+    beforeEach(async () => {
+      const moduleFixture: TestingModule = await Test.createTestingModule({
+        imports: [AppModule],
+      })
+        .useMocker((token) => {
+          if (token === OAuthHelperService) {
+            return {
+              generateAuthorizationUrl: jest
+                .fn()
+                .mockReturnValue(MOCK_AUTH_URL),
+            } as Pick<OAuthHelperService, 'generateAuthorizationUrl'>
+          }
+
+          if (token === ConfigService) {
+            return {
+              getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
+            } as Pick<ConfigService, 'getOrThrow'>
+          }
+        })
+        .compile()
+
+      app = moduleFixture.createNestApplication()
+    })
+
+    it('should redirect to FE if there is already a session', async () => {
+      mockExpressSession(app)
+      await app.init()
+
+      return request(app.getHttpServer())
+        .get('/auth/oauth/discord')
+        .expect(HttpStatus.FOUND)
+        .expect('Location', MOCK_FE_URL)
+    })
+
+    it('should redirect to the authorization URL if no session is found', async () => {
+      await app.init()
+
+      return request(app.getHttpServer())
+        .get('/auth/oauth/discord')
+        .expect(HttpStatus.FOUND)
+        .expect('Location', MOCK_AUTH_URL)
+    })
   })
 
   describe('GET auth/oauth/discord/callback', () => {
