@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing'
+import { Test } from '@nestjs/testing'
 import { HttpStatus, INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
@@ -14,24 +14,17 @@ describe('AuthController (e2e)', () => {
     const MOCK_FE_URL = 'http://frontend/'
 
     beforeEach(async () => {
-      const moduleFixture: TestingModule = await Test.createTestingModule({
+      const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
       })
-        .useMocker((token) => {
-          if (token === OAuthHelperService) {
-            return {
-              generateAuthorizationUrl: jest
-                .fn()
-                .mockReturnValue(MOCK_AUTH_URL),
-            } as Pick<OAuthHelperService, 'generateAuthorizationUrl'>
-          }
-
-          if (token === ConfigService) {
-            return {
-              getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
-            } as Pick<ConfigService, 'getOrThrow'>
-          }
-        })
+        .overrideProvider(OAuthHelperService)
+        .useValue({
+          generateAuthorizationUrl: jest.fn().mockReturnValue(MOCK_AUTH_URL),
+        } as Pick<OAuthHelperService, 'generateAuthorizationUrl'>)
+        .overrideProvider(ConfigService)
+        .useValue({
+          getOrThrow: jest.fn().mockReturnValue(MOCK_FE_URL),
+        } as Pick<ConfigService, 'getOrThrow'>)
         .compile()
 
       app = moduleFixture.createNestApplication()
