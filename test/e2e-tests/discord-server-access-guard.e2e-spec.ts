@@ -7,9 +7,6 @@ import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
 import { RESTGetAPIGuildMemberResult } from 'discord-api-types/v10'
-import * as avatarUtil from 'src/discord-api/utils/avatar.util'
-
-jest.spyOn(avatarUtil, 'getMemberAvatarUrl').mockImplementation(() => '')
 
 describe('DiscordServerAccessGuard (e2e)', () => {
   let app: INestApplication
