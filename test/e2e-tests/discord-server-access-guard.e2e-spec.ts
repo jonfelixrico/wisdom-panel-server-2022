@@ -1,9 +1,11 @@
+import axios from 'axios'
+import MockAdapter from 'axios-mock-adapter'
+
 import { Test, TestingModule } from '@nestjs/testing'
 import { INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
-import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
 import { RESTGetAPIGuildMemberResult } from 'discord-api-types/v10'
 import * as avatarUtil from 'src/discord-api/utils/avatar.util'
 
@@ -11,7 +13,22 @@ jest.spyOn(avatarUtil, 'getMemberAvatarUrl').mockImplementation(() => '')
 
 describe('DiscordServerAccessGuard (e2e)', () => {
   let app: INestApplication
-  let api: ServerMemberApiService
+
+  let mock: MockAdapter
+  beforeAll(() => {
+    mock = new MockAdapter(axios)
+
+    mock.onGet(/guilds\/dummy_server\/members\/dummy_user$/).reply(200, {
+      nick: 'dummy_nick',
+      avatar: 'dummy_avatar',
+      user: {
+        id: 'dummy_id',
+      },
+    } as Partial<RESTGetAPIGuildMemberResult>)
+  })
+  afterAll(() => {
+    mock.restore()
+  })
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -21,72 +38,53 @@ describe('DiscordServerAccessGuard (e2e)', () => {
     app = moduleFixture.createNestApplication()
     mockExpressSession(app)
 
-    api = app.get(ServerMemberApiService)
-    jest.spyOn(api, 'getMember').mockImplementation(() =>
-      Promise.resolve({
-        nick: 'dummy',
-        user: {
-          username: 'dummy',
-        },
-      } as RESTGetAPIGuildMemberResult),
-    )
-
     await app.init()
+  })
+  afterEach(() => {
+    mock.reset()
   })
 
   it('should return status 200 if both bot and user have access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
+    mock.onGet(/guilds\/dummy_server$/).reply(200)
+    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(200)
 
     return request(app.getHttpServer())
-      .get('/server/dummy/user/dummy')
+      .get('/server/dummy_server/user/dummy_user')
       .expect(200)
   })
 
   it('should return status 403 if only user has access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
+    mock.onGet(/guilds\/dummy_server$/).reply(403, {
+      code: 1234,
+    })
+    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(200)
 
     return request(app.getHttpServer())
-      .get('/server/dummy/user/dummy')
+      .get('/server/dummy_server/user/dummy_user')
       .expect(403)
   })
 
   it('should return status 403 if only bot has access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(true))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
+    mock.onGet(/guilds\/dummy_server$/).reply(200)
+    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(403, {
+      code: 1234,
+    })
 
     return request(app.getHttpServer())
-      .get('/server/dummy/user/dummy')
+      .get('/server/dummy_server/user/dummy_user')
       .expect(403)
   })
 
   it('should return status 403 if neither have access', async () => {
-    jest
-      .spyOn(api, 'isBotMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
-
-    jest
-      .spyOn(api, 'isUserMemberOf')
-      .mockImplementation(() => Promise.resolve(false))
+    mock.onGet(/guilds\/dummy_server$/).reply(403, {
+      code: 1234,
+    })
+    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(403, {
+      code: 1234,
+    })
 
     return request(app.getHttpServer())
-      .get('/server/dummy/user/dummy')
+      .get('/server/dummy_server/user/dummy_user')
       .expect(403)
   })
 })
