@@ -34,5 +34,5 @@ export function isDiscordError(e: unknown): e is DiscordError {
    *
    * See https://discord.com/developers/docs/topics/opcodes-and-status-codes#json
    */
-  return typeof data.code === 'number'
+  return typeof data?.code === 'number'
 }
