@@ -7,6 +7,8 @@ import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oaut
 import { AuthController } from 'src/discord-oauth/controllers/auth/auth.controller'
 import { SessionData } from 'express-session'
 
+// TODO replace usages of jest.fn or jest.spyOn with actual axios HTTP interceptors if applicable
+
 describe('AuthController (e2e)', () => {
   describe('GET auth/oauth/discord', () => {
     let app: INestApplication
