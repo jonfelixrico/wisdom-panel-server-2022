@@ -40,6 +40,9 @@ describe('DiscordServerAccessGuard (e2e)', () => {
 
     await app.init()
   })
+  afterEach(() => {
+    mock.reset()
+  })
 
   it('should return status 200 if both bot and user have access', async () => {
     mock.onGet(/guilds\/dummy_server$/).reply(200)
