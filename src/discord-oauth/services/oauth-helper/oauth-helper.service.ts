@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { Axios } from 'axios'
 import {
   RESTPostOAuth2AccessTokenResult,
   RESTPostOAuth2AccessTokenURLEncodedData,
 } from 'discord-api-types/v10'
-import { HttpService } from 'nestjs-http-promise'
 import { stringify } from 'qs'
 import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
 import { formatOAuth2Result } from 'src/discord-oauth/utils/token.util'
@@ -23,7 +23,7 @@ interface Params {
 export class OAuthHelperService {
   private config: Params
 
-  constructor(cfg: ConfigService, private http: HttpService) {
+  constructor(cfg: ConfigService, private http: Axios) {
     this.config = {
       clientId: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_ID'),
       clientSecret: cfg.getOrThrow('DISCORD_OAUTH_CLIENT_SECRET'),
