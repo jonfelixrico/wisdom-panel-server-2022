@@ -42,13 +42,39 @@ describe('AuthController (e2e)', () => {
   })
 
   describe('GET auth/oauth/discord/callback -- error cases', () => {
-    it.todo(
-      'should redirect to FE with error query params and state if an error was received',
-    )
+    let app: INestApplication
+    beforeEach(async () => {
+      const moduleFixture = await Test.createTestingModule({
+        imports: [AppModule],
+      }).compile()
 
-    it.todo(
-      'should redirect to FE with badRequest query params if misuse is detected',
-    )
+      app = moduleFixture.createNestApplication()
+
+      await app.init()
+    })
+
+    it('should redirect to FE with error-related query params on OAuth fail', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/auth/oauth/discord/callback?error=dummy_error&error_description=dummy_description',
+      )
+
+      expect(response.statusCode).toEqual(HttpStatus.FOUND)
+      const location = response.get('Location')
+      expect(location).toContain('http://frontend')
+      expect(location).toContain('error=dummy_error')
+      expect(location).toContain('errorDescription=dummy_description')
+    })
+
+    it('should redirect to FE with badRequest query params if misuse is detected', async () => {
+      const response = await request(app.getHttpServer()).get(
+        '/auth/oauth/discord/callback',
+      )
+
+      expect(response.statusCode).toEqual(HttpStatus.FOUND)
+      const location = response.get('Location')
+      expect(location).toContain('http://frontend')
+      expect(location).toContain('badRequest=true')
+    })
   })
 
   describe('GET auth/oauth/discord/callback -- success cases', () => {
