@@ -7,9 +7,14 @@ import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
 import { RESTGetAPIGuildMemberResult } from 'discord-api-types/v10'
-import * as avatarUtil from 'src/discord-api/utils/avatar.util'
 
-jest.spyOn(avatarUtil, 'getMemberAvatarUrl').mockImplementation(() => '')
+const HTTP_403_BODY = {
+  code: 1234,
+}
+// the value of the app's :serverId param must be the same with discord's :guildId param
+const SUPERTEST_TARGET_ENDPOINT = '/server/dummy_server/user/dummy_user'
+const BOT_MEMBER_CHECK_ENDPOINT = /guilds\/dummy_server$/
+const USER_MEMBER_CHECK_ENDPOINT = /users\/@me\/guilds\/dummy_server\/member$/
 
 describe('DiscordServerAccessGuard (e2e)', () => {
   let app: INestApplication
@@ -45,46 +50,40 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 200 if both bot and user have access', async () => {
-    mock.onGet(/guilds\/dummy_server$/).reply(200)
-    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(200)
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200)
+    mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(200)
 
     return request(app.getHttpServer())
-      .get('/server/dummy_server/user/dummy_user')
+      .get(SUPERTEST_TARGET_ENDPOINT)
       .expect(200)
   })
 
   it('should return status 403 if only user has access', async () => {
-    mock.onGet(/guilds\/dummy_server$/).reply(403, {
-      code: 1234,
-    })
-    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(200)
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(403, HTTP_403_BODY)
+    mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(200)
 
     return request(app.getHttpServer())
-      .get('/server/dummy_server/user/dummy_user')
+      .get(SUPERTEST_TARGET_ENDPOINT)
       .expect(403)
   })
 
   it('should return status 403 if only bot has access', async () => {
-    mock.onGet(/guilds\/dummy_server$/).reply(200)
-    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(403, {
-      code: 1234,
-    })
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200)
+    mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(403, HTTP_403_BODY)
 
     return request(app.getHttpServer())
-      .get('/server/dummy_server/user/dummy_user')
+      .get(SUPERTEST_TARGET_ENDPOINT)
       .expect(403)
   })
 
   it('should return status 403 if neither have access', async () => {
-    mock.onGet(/guilds\/dummy_server$/).reply(403, {
-      code: 1234,
-    })
-    mock.onGet(/users\/@me\/guilds\/dummy_server\/member$/).reply(403, {
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(403, HTTP_403_BODY)
+    mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(403, {
       code: 1234,
     })
 
     return request(app.getHttpServer())
-      .get('/server/dummy_server/user/dummy_user')
+      .get(SUPERTEST_TARGET_ENDPOINT)
       .expect(403)
   })
 })
