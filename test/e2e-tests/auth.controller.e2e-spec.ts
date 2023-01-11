@@ -12,8 +12,6 @@ import {
   RESTPostOAuth2AccessTokenResult,
 } from 'discord-api-types/v10'
 
-// TODO replace usages of jest.fn or jest.spyOn with actual axios HTTP interceptors if applicable
-
 describe('AuthController (e2e)', () => {
   describe('GET auth/oauth/discord', () => {
     let app: INestApplication
