@@ -7,6 +7,8 @@ import {
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
+import { createSessionUserDiscordApiClient } from '../interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.utils'
+import { createClient } from '../utils/api-client.util'
 
 export const SERVER_ID_PARAM_KEY = Symbol()
 
@@ -45,12 +47,12 @@ export class DiscordServerAccessGuard implements CanActivate {
       throw new ForbiddenException()
     }
 
-    if (
-      !(await this.serverMemberApi.isUserMemberOf(
-        req.sessionUserDiscordApi,
-        serverId,
-      ))
-    ) {
+    const client = createSessionUserDiscordApiClient(
+      req.session.credentials,
+      req.session.userId,
+    )
+
+    if (!(await this.serverMemberApi.isUserMemberOf(client, serverId))) {
       // TODO add code do distinguish bot-no-acccess from user-no-access
       throw new ForbiddenException()
     }
