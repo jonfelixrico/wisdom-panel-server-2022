@@ -65,7 +65,7 @@ export class ServerMemberApiService {
     const url = Routes.userGuildMember(serverId)
     return this.cache.wrap(`${client.userId}:${url}`, async () => {
       try {
-        await client.get(Routes.userGuildMember(serverId))
+        await client.get(url)
         return true
       } catch (e) {
         if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
