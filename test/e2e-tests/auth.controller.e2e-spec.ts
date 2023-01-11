@@ -1,6 +1,4 @@
 import axios from 'axios'
-const instance = axios.create()
-axios.create = () => instance
 import MockAdapter from 'axios-mock-adapter'
 
 import { Test } from '@nestjs/testing'
@@ -92,7 +90,7 @@ describe('AuthController (e2e)', () => {
 
     let mockAxios: MockAdapter
     beforeAll(() => {
-      mockAxios = new MockAdapter(instance)
+      mockAxios = new MockAdapter(axios)
       mockAxios.onPost(/token/).reply(200, {
         access_token: 'dummy_token',
         token_type: 'Bearer',
