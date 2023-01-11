@@ -1,11 +1,18 @@
+import axios from 'axios'
+const instance = axios.create()
+axios.create = () => instance
+import MockAdapter from 'axios-mock-adapter'
+
 import { Test } from '@nestjs/testing'
 import { HttpStatus, INestApplication } from '@nestjs/common'
 import * as request from 'supertest'
 import { AppModule } from 'src/app.module'
 import { mockExpressSession } from 'test/utils/mock-express-session'
-import { OAuthHelperService } from 'src/discord-oauth/services/oauth-helper/oauth-helper.service'
-import { AuthController } from 'src/discord-oauth/controllers/auth/auth.controller'
 import { SessionData } from 'express-session'
+import {
+  RESTGetAPICurrentUserResult,
+  RESTPostOAuth2AccessTokenResult,
+} from 'discord-api-types/v10'
 
 // TODO replace usages of jest.fn or jest.spyOn with actual axios HTTP interceptors if applicable
 
@@ -79,22 +86,30 @@ describe('AuthController (e2e)', () => {
 
   describe('GET auth/oauth/discord/callback -- success cases', () => {
     let app: INestApplication
-
     let session: Partial<SessionData> & {
       save: (fn: () => void) => void
     }
 
+    let mockAxios: MockAdapter
+    beforeAll(() => {
+      mockAxios = new MockAdapter(instance)
+      mockAxios.onPost(/token/).reply(200, {
+        access_token: 'dummy_token',
+        token_type: 'Bearer',
+      } as Partial<RESTPostOAuth2AccessTokenResult>)
+
+      mockAxios.onGet(/users\/@me/).reply(200, {
+        id: 'dummy_id',
+      } as Partial<RESTGetAPICurrentUserResult>)
+    })
+    afterAll(() => {
+      mockAxios.restore()
+    })
+
     beforeEach(async () => {
       const moduleFixture = await Test.createTestingModule({
         imports: [AppModule],
-      })
-        .overrideProvider(OAuthHelperService)
-        .useValue({
-          exchangeAccessCode: jest.fn().mockResolvedValue({
-            accessToken: 'dummy_access_token',
-          }),
-        } as Pick<OAuthHelperService, 'exchangeAccessCode'>)
-        .compile()
+      }).compile()
 
       app = moduleFixture.createNestApplication()
 
@@ -109,11 +124,6 @@ describe('AuthController (e2e)', () => {
       })
 
       await app.init()
-
-      const controller = app.get(AuthController)
-      jest
-        .spyOn(controller, 'fetchUserIdUsingToken')
-        .mockResolvedValue('dummy-id')
     })
 
     it('should create a session then redirect to the FE', async () => {
@@ -128,9 +138,9 @@ describe('AuthController (e2e)', () => {
       expect(location).toContain('state=dummy_state')
 
       // check session
-      expect(session.userId).toEqual('dummy-id')
+      expect(session.userId).toEqual('dummy_id')
       expect(session.credentials).toMatchObject({
-        accessToken: 'dummy_access_token',
+        accessToken: 'dummy_token',
       })
     })
   })
