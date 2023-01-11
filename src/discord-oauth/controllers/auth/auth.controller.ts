@@ -131,7 +131,7 @@ export class AuthController {
   ) {
     const { LOGGER } = this
 
-    if (req.session.credentials) {
+    if (req.session?.credentials) {
       // Handling for already-authenticated users
       LOGGER.debug('Session detected, redirected to FE url.')
       res.redirect(this.cfg.getOrThrow('FRONTEND_URL'))
