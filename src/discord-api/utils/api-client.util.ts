@@ -1,7 +1,6 @@
 import axios, { Axios, AxiosError, isAxiosError } from 'axios'
 import { RouteBases, RESTJSONErrorCodes } from 'discord-api-types/v10'
 import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
-import { SessionUserDiscordApiClient } from '../interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
 
 export function createClient(accessToken: string, tokenType: string) {
   return axios.create({
@@ -12,6 +11,13 @@ export function createClient(accessToken: string, tokenType: string) {
   })
 }
 
+export type SessionUserClient = Axios & {
+  /**
+   * The id of the user who owns the credentials behind the client instance.
+   */
+  userId: string
+}
+
 export function createSessionUserClient(
   credentials: DiscordUserOAuth2Credentials,
   userId: string,
@@ -19,12 +25,9 @@ export function createSessionUserClient(
   const { accessToken, tokenType } = credentials
   // TODO impl refresh token
   const client = createClient(accessToken, tokenType)
-  return Object.assign<Axios, Pick<SessionUserDiscordApiClient, 'userId'>>(
-    client,
-    {
-      userId,
-    },
-  )
+  return Object.assign<Axios, Pick<SessionUserClient, 'userId'>>(client, {
+    userId,
+  })
 }
 
 export type DiscordError = AxiosError<{
