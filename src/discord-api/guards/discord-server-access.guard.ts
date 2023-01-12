@@ -8,7 +8,6 @@ import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
 import { createSessionUserDiscordApiClient } from '../interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.utils'
-import { createClient } from '../utils/api-client.util'
 
 export const SERVER_ID_PARAM_KEY = Symbol()
 
