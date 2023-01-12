@@ -1,5 +1,6 @@
-import axios, { AxiosError, isAxiosError } from 'axios'
+import axios, { Axios, AxiosError, isAxiosError } from 'axios'
 import { RouteBases, RESTJSONErrorCodes } from 'discord-api-types/v10'
+import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
 
 export function createClient(accessToken: string, tokenType: string) {
   return axios.create({
@@ -7,6 +8,25 @@ export function createClient(accessToken: string, tokenType: string) {
       Authorization: `${tokenType} ${accessToken}`,
     },
     baseURL: RouteBases.api,
+  })
+}
+
+export type SessionUserClient = Axios & {
+  /**
+   * The id of the user who owns the credentials behind the client instance.
+   */
+  userId: string
+}
+
+export function createSessionUserClient(
+  credentials: DiscordUserOAuth2Credentials,
+  userId: string,
+) {
+  const { accessToken, tokenType } = credentials
+  // TODO impl refresh token
+  const client = createClient(accessToken, tokenType)
+  return Object.assign<Axios, Pick<SessionUserClient, 'userId'>>(client, {
+    userId,
   })
 }
 

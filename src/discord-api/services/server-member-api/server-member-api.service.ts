@@ -3,8 +3,10 @@ import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.p
 import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { Cache } from 'cache-manager'
 import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
-import { isDiscordError } from 'src/discord-api/utils/api-client.util'
-import { SessionUserDiscordApiClient } from 'src/discord-api/interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
+import {
+  isDiscordError,
+  SessionUserClient,
+} from 'src/discord-api/utils/api-client.util'
 
 @Injectable()
 export class ServerMemberApiService {
@@ -59,7 +61,7 @@ export class ServerMemberApiService {
   }
 
   async isUserMemberOf(
-    client: SessionUserDiscordApiClient,
+    client: SessionUserClient,
     serverId: string,
   ): Promise<boolean> {
     const url = Routes.userGuildMember(serverId)
