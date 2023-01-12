@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core'
 import { Request } from 'express'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
-import { createSessionUserDiscordApiClient } from '../interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.utils'
+import { createSessionUserClient } from '../utils/api-client.util'
 
 export const SERVER_ID_PARAM_KEY = Symbol()
 
@@ -46,7 +46,7 @@ export class DiscordServerAccessGuard implements CanActivate {
       throw new ForbiddenException()
     }
 
-    const client = createSessionUserDiscordApiClient(
+    const client = createSessionUserClient(
       req.session.credentials,
       req.session.userId,
     )
