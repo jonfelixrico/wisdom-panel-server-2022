@@ -1,7 +1,7 @@
-import { SessionUserDiscordApiClient } from 'src/discord-api/interceptors/inject-session-user-discord-api-client/session-user-discord-api-client.class'
+import { SessionUserClient } from 'src/discord-api/utils/api-client.util'
 
 declare module 'express' {
   interface Request {
-    sessionUserDiscordApi?: SessionUserDiscordApiClient
+    sessionUserDiscordApi?: SessionUserClient
   }
 }
