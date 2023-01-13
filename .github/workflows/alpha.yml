@@ -28,4 +28,4 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/wisdom-panel-client:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-panel-client:alpha
+          tags: jonfelixrico/wisdom-panel-server:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-panel-server:alpha
