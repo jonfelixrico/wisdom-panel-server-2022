@@ -1,0 +1,22 @@
+services:
+  backend:
+    image: jonfelixrico/wisdom-panel-server:alpha
+    restart: unless-stopped
+    ports:
+      - 9085:9085
+    env_file:
+      - .env
+    environment:
+      - LOGS_FILENAME=/var/log/wisdom-panel-server/nest-%DATE%.log
+    volumes:
+      - ./server/logs:/var/log/wisdom-panel-server
+
+  client:
+    image: jonfelixrico/wisdom-panel-client:alpha
+    restart: unless-stopped
+    ports:
+      - 9080:80
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - API_BASE_URL=http://backend
