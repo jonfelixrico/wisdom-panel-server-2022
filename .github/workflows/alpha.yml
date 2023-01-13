@@ -1,0 +1,31 @@
+name: Alpha pipeline
+
+on:
+  push:
+    branches:
+      - alpha-*
+
+jobs:
+  run-tests:
+    uses: ./.github/workflows/run-tests.reusable.yml
+  build:
+    needs: [run-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v3
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push to DockerHub
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: jonfelixrico/wisdom-panel-client:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-panel-client:alpha
