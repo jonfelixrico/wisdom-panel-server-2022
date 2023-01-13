@@ -1,0 +1,13 @@
+services:
+  backend:
+    # points to the root of this repository
+    build: ../../.
+    restart: unless-stopped
+    ports:
+      - 9085:9085
+    env_file:
+      - .env
+    environment:
+      - LOGS_FILENAME=/var/log/wisdom-panel-server/nest-%DATE%.log
+    volumes:
+      - ./logs:/var/log/wisdom-panel-server
