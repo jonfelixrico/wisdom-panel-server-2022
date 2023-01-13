@@ -4,20 +4,12 @@
 name: Run tests
 
 on:
-  push:
-    branches: ['master', 'develop-*']
-  pull_request:
-    branches: ['master', 'develop-*']
+  workflow_call:
 
 jobs:
   e2e:
     name: E2E tests
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - name: Check out the code
@@ -26,10 +18,10 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: latest
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -39,11 +31,6 @@ jobs:
     name: Unit tests
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
       - name: Check out the code
         uses: actions/checkout@v3
@@ -51,10 +38,10 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: latest
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
