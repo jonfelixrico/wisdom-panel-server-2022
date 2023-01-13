@@ -1,0 +1,9 @@
+services:
+  backend:
+    # points to the root of this repository
+    build: ../../.
+    restart: unless-stopped
+    ports:
+      - 9085:9085
+    env_file:
+      - .env
