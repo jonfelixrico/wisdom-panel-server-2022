@@ -7,3 +7,7 @@ services:
       - 9085:9085
     env_file:
       - .env
+    environment:
+      - LOGS_FILENAME=/var/log/wisdom-panel-server/nest-%DATE%.log
+    volumes:
+      - ./logs:/var/log/wisdom-panel-server
