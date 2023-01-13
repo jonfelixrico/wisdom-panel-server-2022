@@ -1,6 +1,5 @@
 services:
   backend:
-    # points to the root of this repository
     image: jonfelixrico/wisdom-panel-server:alpha
     restart: unless-stopped
     ports:
@@ -13,8 +12,7 @@ services:
       - ./server/logs:/var/log/wisdom-panel-server
 
 client:
-  # points to the root of this repository
-  build: jonfelixrico/wisdom-panel-client:alpha
+  image: jonfelixrico/wisdom-panel-client:alpha
   restart: unless-stopped
   ports:
     - 9080:80
