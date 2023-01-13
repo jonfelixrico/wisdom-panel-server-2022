@@ -4,10 +4,7 @@
 name: Run tests
 
 on:
-  push:
-    branches: ['master', 'develop-*']
-  pull_request:
-    branches: ['master', 'develop-*']
+  workflow_call:
 
 jobs:
   e2e:
