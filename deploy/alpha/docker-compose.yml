@@ -11,3 +11,14 @@ services:
       - LOGS_FILENAME=/var/log/wisdom-panel-server/nest-%DATE%.log
     volumes:
       - ./server/logs:/var/log/wisdom-panel-server
+
+client:
+  # points to the root of this repository
+  build: jonfelixrico/wisdom-panel-client
+  restart: unless-stopped
+  ports:
+    - 9080:80
+  volumes:
+    - ./nginx/templates:/etc/nginx/templates
+  environment:
+    - API_BASE_URL=http://backend
