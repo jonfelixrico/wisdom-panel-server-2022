@@ -20,7 +20,7 @@ FROM base AS deploy
 
 WORKDIR /app
 COPY --from=build /app/dist ./dist/
-COPY .env.defaults ./dist/
+COPY .env.defaults ./dist
 COPY --from=build /app/node_modules ./node_modules
 
 EXPOSE 9085
