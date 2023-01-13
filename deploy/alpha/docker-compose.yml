@@ -11,12 +11,12 @@ services:
     volumes:
       - ./server/logs:/var/log/wisdom-panel-server
 
-client:
-  image: jonfelixrico/wisdom-panel-client:alpha
-  restart: unless-stopped
-  ports:
-    - 9080:80
-  volumes:
-    - ./nginx/templates:/etc/nginx/templates
-  environment:
-    - API_BASE_URL=http://backend
+  client:
+    image: jonfelixrico/wisdom-panel-client:alpha
+    restart: unless-stopped
+    ports:
+      - 9080:80
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - API_BASE_URL=http://backend
