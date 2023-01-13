@@ -20,8 +20,10 @@ FROM base AS deploy
 
 WORKDIR /app
 COPY --from=build /app/dist ./dist/
-COPY .env.defaults ./dist
 COPY --from=build /app/node_modules ./node_modules
+
+# needed so that @nestjs/config can still get the default env file
+COPY .env.defaults ./
 
 EXPOSE 9085
 
