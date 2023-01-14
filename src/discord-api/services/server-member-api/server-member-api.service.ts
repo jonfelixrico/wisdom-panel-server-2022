@@ -79,10 +79,28 @@ export class ServerMemberApiService {
     serverId: string,
     userId: string,
   ): Promise<RESTGetAPIGuildMemberResult | null> {
+    /*
+     * This is just to check if the bot has access to that server.
+     * This eliminates 403s by being thrown by the methods below.
+     */
     const server = await this.getServer(serverId)
     if (!server) {
       return null
     }
+
+    /*
+     * We are going with different strategies with user-data fetching based on the server size.
+     *
+     * For servers with <= 1k members, we can use the list endpoint to fetch all of their members at once.
+     * Since we have all of their member data in one go, we can just keep hitting the cache for future data retrieval
+     * until the cache fails for any members. If we query for 10 different users in a short amount of time, we will not be rate-limited.
+     *
+     * For servers with > 1k members, we can't use the approach above since we'll have to perform multiple requests. Too complex
+     * and we might hit the rate limit before, say, retrieving 10k members (10 requests).
+     *
+     * Even with caching, if we try to query for 10 different users with this individual-retrieve approach, we will be rate-limited since
+     * we're still hitting the API.
+     */
 
     if (server.approximate_member_count > 1_000) {
       return await this.getIndividualMember(serverId, userId)
