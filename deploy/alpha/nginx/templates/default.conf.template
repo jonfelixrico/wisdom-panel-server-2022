@@ -1,0 +1,35 @@
+# Majority of this config is taken from https://quasar.dev/quasar-cli-vite/developing-spa/deploying#general-deployment
+
+server {
+  listen 80;
+  server_name localhost;
+
+  root   /usr/share/nginx/html;
+  index  index.html index.htm;
+
+  add_header X-Frame-Options "SAMEORIGIN";
+  add_header X-XSS-Protection "1; mode=block";
+  add_header X-Content-Type-Options "nosniff";
+
+  index index.html;
+
+  charset utf-8;
+
+  # This is the prod equivalent of the Vite dev env reverse proxy
+  location /api/ {
+    proxy_pass ${API_BASE_URL}/;
+  }
+
+  location / {
+      try_files $uri $uri/ /index.html;
+  }
+
+  location = /robots.txt  { access_log off; log_not_found off; }
+
+  access_log off;
+  error_log  /var/log/nginx/error.log error;
+
+  location ~ /\.(?!well-known).* {
+      deny all;
+  }
+}
