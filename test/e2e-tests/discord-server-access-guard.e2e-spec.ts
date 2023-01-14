@@ -23,11 +23,20 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   beforeAll(() => {
     mock = new MockAdapter(axios)
 
+    mock.onGet(/guilds\/dummy_server\/members$/).reply(200, [
+      {
+        nick: 'dummy_nick',
+        avatar: 'dummy_avatar',
+        user: {
+          id: 'dummy_user',
+        },
+      },
+    ] as Partial<RESTGetAPIGuildMemberResult>[])
     mock.onGet(/guilds\/dummy_server\/members\/dummy_user$/).reply(200, {
       nick: 'dummy_nick',
       avatar: 'dummy_avatar',
       user: {
-        id: 'dummy_id',
+        id: 'dummy_user',
       },
     } as Partial<RESTGetAPIGuildMemberResult>)
   })
@@ -50,7 +59,7 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 200 if both bot and user have access', async () => {
-    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200)
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200, {})
     mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(200)
 
     return request(app.getHttpServer())
@@ -68,7 +77,8 @@ describe('DiscordServerAccessGuard (e2e)', () => {
   })
 
   it('should return status 403 if only bot has access', async () => {
-    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200)
+    // TODO define actual server mock data
+    mock.onGet(BOT_MEMBER_CHECK_ENDPOINT).reply(200, {})
     mock.onGet(USER_MEMBER_CHECK_ENDPOINT).reply(403, HTTP_403_BODY)
 
     return request(app.getHttpServer())
