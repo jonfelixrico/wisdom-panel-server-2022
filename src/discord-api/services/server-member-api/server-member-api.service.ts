@@ -2,7 +2,12 @@ import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
 import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { Cache } from 'cache-manager'
-import { RESTGetAPIGuildMemberResult, Routes } from 'discord-api-types/v10'
+import {
+  RESTGetAPIGuildMemberResult,
+  RESTGetAPIGuildQuery,
+  RESTGetAPIGuildResult,
+  Routes,
+} from 'discord-api-types/v10'
 import {
   isDiscordError,
   SessionUserClient,
@@ -15,21 +20,28 @@ export class ServerMemberApiService {
     @Inject(DISCORD_API_CACHE) private cache: Cache,
   ) {}
 
-  async isBotMemberOf(serverId: string): Promise<boolean> {
-    // TODO move this to server API
+  private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
-    return this.cache.wrap(url, async () => {
+    return await this.cache.wrap(url, async () => {
       try {
-        await this.api.get(url)
-        return true
+        const { data } = await this.api.get(url, {
+          params: {
+            with_counts: true,
+          } as RESTGetAPIGuildQuery,
+        })
+        return data
       } catch (e) {
         if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
-          return false
+          return null
         }
 
         throw e
       }
     })
+  }
+
+  async isBotMemberOf(serverId: string): Promise<boolean> {
+    return !!this.getServer(serverId)
   }
 
   async getMember(
