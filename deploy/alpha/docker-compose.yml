@@ -8,6 +8,7 @@ services:
       - .env
     environment:
       - LOGS_FILENAME=/var/log/wisdom-panel-server/nest-%DATE%.log
+      - NODE_ENV=production
     volumes:
       - ./server/logs:/var/log/wisdom-panel-server
 
