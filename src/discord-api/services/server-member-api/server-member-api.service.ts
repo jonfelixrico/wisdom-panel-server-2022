@@ -22,7 +22,9 @@ export class ServerMemberApiService {
 
   private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
-    return await this.cache.wrap(url, async () => {
+    return await this.cache.wrap(
+      url,
+      async () => {
       try {
         const { data } = await this.api.get(url, {
           params: {
@@ -37,6 +39,14 @@ export class ServerMemberApiService {
 
         throw e
       }
+      },
+      /*
+       * We don't expect server data to change drastically within such a time period,
+       * hence the larger cache time.
+       */
+      5 * 60 * 1_000,
+    )
+  }
     })
   }
 
