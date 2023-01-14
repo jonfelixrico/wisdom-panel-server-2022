@@ -19,4 +19,4 @@ services:
     volumes:
       - ./nginx/templates:/etc/nginx/templates
     environment:
-      - API_BASE_URL=http://backend
+      - API_BASE_URL=http://backend:9085
