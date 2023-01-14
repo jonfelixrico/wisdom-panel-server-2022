@@ -3,7 +3,10 @@ import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.p
 import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { Cache } from 'cache-manager'
 import {
+  APIGuildMember,
   RESTGetAPIGuildMemberResult,
+  RESTGetAPIGuildMembersQuery,
+  RESTGetAPIGuildMembersResult,
   RESTGetAPIGuildQuery,
   RESTGetAPIGuildResult,
   Routes,
@@ -12,6 +15,7 @@ import {
   isDiscordError,
   SessionUserClient,
 } from 'src/discord-api/utils/api-client.util'
+import { keyBy } from 'lodash'
 
 @Injectable()
 export class ServerMemberApiService {
@@ -25,20 +29,20 @@ export class ServerMemberApiService {
     return await this.cache.wrap(
       url,
       async () => {
-      try {
-        const { data } = await this.api.get(url, {
-          params: {
-            with_counts: true,
-          } as RESTGetAPIGuildQuery,
-        })
-        return data
-      } catch (e) {
-        if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
-          return null
-        }
+        try {
+          const { data } = await this.api.get(url, {
+            params: {
+              with_counts: true,
+            } as RESTGetAPIGuildQuery,
+          })
+          return data
+        } catch (e) {
+          if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
+            return null
+          }
 
-        throw e
-      }
+          throw e
+        }
       },
       /*
        * We don't expect server data to change drastically within such a time period,
@@ -47,6 +51,19 @@ export class ServerMemberApiService {
       5 * 60 * 1_000,
     )
   }
+
+  private async getServerMemberMap(
+    serverId: string,
+  ): Promise<Record<string, APIGuildMember>> {
+    const url = Routes.guildMembers(serverId)
+    return await this.cache.wrap(url, async () => {
+      const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
+        params: {
+          limit: 1_000,
+        } as RESTGetAPIGuildMembersQuery,
+      })
+
+      return keyBy(data, (member) => member.user.id)
     })
   }
 
@@ -55,6 +72,23 @@ export class ServerMemberApiService {
   }
 
   async getMember(
+    serverId: string,
+    userId: string,
+  ): Promise<RESTGetAPIGuildMemberResult | null> {
+    const server = await this.getServer(serverId)
+    if (!server) {
+      return null
+    }
+
+    if (server.approximate_member_count > 1_000) {
+      return await this.getIndividualMember(serverId, userId)
+    }
+
+    const userMap = await this.getServerMemberMap(serverId)
+    return userMap[userId] ?? null
+  }
+
+  private async getIndividualMember(
     serverId: string,
     userId: string,
   ): Promise<RESTGetAPIGuildMemberResult | null> {
