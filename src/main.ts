@@ -12,11 +12,7 @@ async function bootstrap() {
   // -- SETUP --
   sessionSetup(app)
 
-  if (process.env.NODE_ENV !== 'development') {
-    /*
-     * The OpenAPI should only be available for dev envs and never anywhere else,
-     * espescially prod.
-     */
+  if (process.env.NODE_ENV !== 'production') {
     openApiSetup(app)
   }
 
