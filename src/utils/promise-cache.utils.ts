@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common'
-import { randomUUID } from 'crypto'
+import { nanoid } from 'nanoid'
 
 /*
  * This util is intended to handle the scenario where you want an async method to only have a single
@@ -21,7 +21,7 @@ export class PromiseCache {
   private readonly LOGGER: Logger
 
   constructor(name?: string) {
-    name = name ?? randomUUID()
+    name = name ?? nanoid(5)
     this.LOGGER = new Logger(`${PromiseCache.name}:${name}`)
   }
 
