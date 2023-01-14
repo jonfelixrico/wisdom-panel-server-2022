@@ -55,6 +55,8 @@ export class ServerMemberApiService {
   private async getServerMemberMap(
     serverId: string,
   ): Promise<Record<string, APIGuildMember>> {
+    // WARNING: The GUILD_MEMBERS intent has to be enabled or else this method will return a 403!!
+
     const url = Routes.guildMembers(serverId)
     return await this.cache.wrap(
       url,
