@@ -56,15 +56,19 @@ export class ServerMemberApiService {
     serverId: string,
   ): Promise<Record<string, APIGuildMember>> {
     const url = Routes.guildMembers(serverId)
-    return await this.cache.wrap(url, async () => {
-      const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
-        params: {
-          limit: 1_000,
-        } as RESTGetAPIGuildMembersQuery,
-      })
+    return await this.cache.wrap(
+      url,
+      async () => {
+        const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
+          params: {
+            limit: 1_000,
+          } as RESTGetAPIGuildMembersQuery,
+        })
 
-      return keyBy(data, (member) => member.user.id)
-    })
+        return keyBy(data, (member) => member.user.id)
+      },
+      2.5 * 60 * 1_000,
+    )
   }
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
