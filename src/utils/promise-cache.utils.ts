@@ -1,3 +1,6 @@
+import { Logger } from '@nestjs/common'
+import { randomUUID } from 'crypto'
+
 /*
  * This util is intended to handle the scenario where you want an async method to only have a single
  * running instance at any given time.
@@ -15,14 +18,23 @@
  */
 export class PromiseCache {
   private cache: Record<string, Promise<unknown>> = {}
+  private readonly LOGGER: Logger
+
+  constructor(name?: string) {
+    name = name ?? randomUUID()
+    this.LOGGER = new Logger(`${PromiseCache.name}:${name}`)
+  }
 
   private getCached<T>(key: string): Promise<T> {
     return this.cache[key] as Promise<T>
   }
 
   run<T>(key: string, asyncFn: () => Promise<T>): Promise<T> {
+    const { LOGGER } = this
+
     const cached = this.getCached<T>(key)
     if (cached) {
+      LOGGER.debug(`${key}: promise already running.`)
       return cached
     }
 
@@ -31,6 +43,7 @@ export class PromiseCache {
      * we can cache it.
      */
     const fnPromise = asyncFn()
+    LOGGER.debug(`${key}: started running an instance.`)
     this.cache[key] = fnPromise
 
     /*
@@ -39,7 +52,14 @@ export class PromiseCache {
      */
     fnPromise.finally(() => {
       if (this.cache[key] === fnPromise) {
+        LOGGER.debug(`${key}: finished running.`)
         delete this.cache[key]
+      } else if (!this.cache[key]) {
+        LOGGER.warn(
+          `${key}: finished running but cache entry seems to be empty.`,
+        )
+      } else {
+        LOGGER.warn(`${key}: finished running but mismatch detected in cache.`)
       }
     })
 
