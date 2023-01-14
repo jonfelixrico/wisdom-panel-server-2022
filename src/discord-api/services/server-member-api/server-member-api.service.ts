@@ -1,7 +1,9 @@
 import { HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
-import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
-import { Cache } from 'cache-manager'
+import {
+  ApiCache,
+  DISCORD_API_CACHE,
+} from 'src/discord-api/providers/discord-api-cache.provider'
 import {
   APIGuildMember,
   RESTGetAPIGuildMemberResult,
@@ -21,12 +23,12 @@ import { keyBy } from 'lodash'
 export class ServerMemberApiService {
   constructor(
     private api: DiscordBotApiClient,
-    @Inject(DISCORD_API_CACHE) private cache: Cache,
+    @Inject(DISCORD_API_CACHE) private cache: ApiCache,
   ) {}
 
   private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
-    return await this.cache.wrap(
+    return await this.cache.wrapV2(
       url,
       async () => {
         try {
@@ -58,7 +60,7 @@ export class ServerMemberApiService {
     // WARNING: The GUILD_MEMBERS intent has to be enabled or else this method will return a 403!!
 
     const url = Routes.guildMembers(serverId)
-    return await this.cache.wrap(
+    return await this.cache.wrapV2(
       url,
       async () => {
         const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
@@ -117,7 +119,7 @@ export class ServerMemberApiService {
     userId: string,
   ): Promise<RESTGetAPIGuildMemberResult | null> {
     const url = Routes.guildMember(serverId, userId)
-    return await this.cache.wrap(url, async () => {
+    return await this.cache.wrapV2(url, async () => {
       try {
         const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(url)
         return data
