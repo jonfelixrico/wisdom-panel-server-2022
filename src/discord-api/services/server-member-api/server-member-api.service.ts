@@ -22,26 +22,31 @@ export class ServerMemberApiService {
 
   private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
-    return await this.cache.wrap(url, async () => {
-      try {
-        const { data } = await this.api.get(url, {
-          params: {
-            with_counts: true,
-          } as RESTGetAPIGuildQuery,
-        })
-        return data
-      } catch (e) {
-        if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
-          return null
-        }
+    return await this.cache.wrap(
+      url,
+      async () => {
+        try {
+          const { data } = await this.api.get(url, {
+            params: {
+              with_counts: true,
+            } as RESTGetAPIGuildQuery,
+          })
+          return data
+        } catch (e) {
+          if (isDiscordError(e) && e.response.status === HttpStatus.FORBIDDEN) {
+            return null
+          }
 
-        throw e
-      }
-    })
+          throw e
+        }
+      },
+      // TODO use a constant for this
+      2 * 60 * 1000, // cache for 2 minutes
+    )
   }
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
-    return !!this.getServer(serverId)
+    return !!(await this.getServer(serverId))
   }
 
   async getMember(
