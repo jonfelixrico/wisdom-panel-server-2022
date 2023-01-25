@@ -1,11 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 import { Promise } from 'bluebird'
+import { Cache } from 'cache-manager'
 import {
   RESTAPIPartialCurrentUserGuild,
   RESTGetAPICurrentUserGuildsQuery,
   RESTGetAPICurrentUserGuildsResult,
   Routes,
 } from 'discord-api-types/v10'
+import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
 import { isDiscordRateLimitError } from 'src/discord-api/utils/api-client.util'
 
@@ -19,14 +21,19 @@ interface DiscordServer extends RESTAPIPartialCurrentUserGuild {
  */
 const FETCH_LIMIT = 200
 
+type ServerMap = Record<string, DiscordServer>
+
 @Injectable()
 export class BotServersCacheService {
-  private servers: Record<string, DiscordServer> = {}
+  private servers: ServerMap = {}
   private lastCompletedFetch: Date
 
   private readonly LOGGER = new Logger(BotServersCacheService.name)
 
-  constructor(private api: DiscordBotApiClient) {}
+  constructor(
+    private api: DiscordBotApiClient,
+    @Inject(DISCORD_API_CACHE) private cache: Cache,
+  ) {}
 
   private pushResultsIntoMap(result: RESTGetAPICurrentUserGuildsResult) {
     const fetchDt = new Date()
@@ -48,7 +55,7 @@ export class BotServersCacheService {
     return data
   }
 
-  private async fetchServersFromDiscord() {
+  private async fetchServers() {
     const { LOGGER } = this
 
     let lastId: string
@@ -102,5 +109,18 @@ export class BotServersCacheService {
         await Promise.delay(e.response.data.retry_after * 1000)
       }
     }
+  }
+
+  private async fetchFnWrapper() {
+    // We only want one instance of fetchServers running at any given time to minimize chances of being rate limited.
+    return await this.cache.wrap('bot-server-cache', () => this.fetchServers())
+  }
+
+  async getServers(): Promise<ServerMap> {
+    if (this.lastCompletedFetch) {
+      await this.fetchFnWrapper()
+    }
+
+    return this.servers
   }
 }
