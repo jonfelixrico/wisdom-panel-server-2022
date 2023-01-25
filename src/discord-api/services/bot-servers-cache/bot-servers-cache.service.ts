@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { Promise } from 'bluebird'
 import {
@@ -18,7 +18,7 @@ import { PromiseCache, SkippedRunError } from 'src/utils/promise-cache.utils'
 const FETCH_LIMIT = 200
 
 @Injectable()
-export class BotServersCacheService {
+export class BotServersCacheService implements OnApplicationBootstrap {
   private servers: Record<
     string,
     RESTAPIPartialCurrentUserGuild & { fetchDt: Date }
@@ -154,5 +154,9 @@ export class BotServersCacheService {
         'CRON job did not run since there was an already active instance.',
       )
     }
+  }
+
+  onApplicationBootstrap() {
+    this.runScheduledTask()
   }
 }
