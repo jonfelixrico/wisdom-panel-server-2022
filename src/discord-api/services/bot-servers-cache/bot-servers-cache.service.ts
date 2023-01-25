@@ -22,6 +22,8 @@ const FETCH_LIMIT = 200
 @Injectable()
 export class BotServersCacheService {
   private servers: Record<string, DiscordServer> = {}
+  private lastCompletedFetch: Date
+
   private readonly LOGGER = new Logger(BotServersCacheService.name)
 
   constructor(private api: DiscordBotApiClient) {}
@@ -36,7 +38,17 @@ export class BotServersCacheService {
     }
   }
 
-  async fetchServers() {
+  private async fetchServersFromDiscordApi(
+    params: RESTGetAPICurrentUserGuildsQuery,
+  ): Promise<RESTGetAPICurrentUserGuildsResult> {
+    const { data } = await this.api.get<RESTGetAPICurrentUserGuildsResult>(
+      Routes.userGuilds(),
+      { params },
+    )
+    return data
+  }
+
+  private async fetchServersFromDiscord() {
     const { LOGGER } = this
 
     let lastId: string
@@ -55,7 +67,10 @@ export class BotServersCacheService {
           /*
            * This will happen if the bot has no joined servers, or if we have
            * already reached the end of the list of servers for the bot.
+           *
+           * This will end the fetch process sucessfully.
            */
+          this.lastCompletedFetch = new Date() // this is to be done per successful fetch process
           return
         }
 
@@ -66,7 +81,10 @@ export class BotServersCacheService {
           /*
            * This means that we've reached the end of the list of the servers
            * that the bot has joined to.
+           *
+           * This will end the fetch process sucessfully.
            */
+          this.lastCompletedFetch = new Date() // this is to be done per successful fetch process
           return
         }
       } catch (e) {
@@ -84,15 +102,5 @@ export class BotServersCacheService {
         await Promise.delay(e.response.data.retry_after * 1000)
       }
     }
-  }
-
-  private async fetchServersFromDiscordApi(
-    params: RESTGetAPICurrentUserGuildsQuery,
-  ): Promise<RESTGetAPICurrentUserGuildsResult> {
-    const { data } = await this.api.get<RESTGetAPICurrentUserGuildsResult>(
-      Routes.userGuilds(),
-      { params },
-    )
-    return data
   }
 }
