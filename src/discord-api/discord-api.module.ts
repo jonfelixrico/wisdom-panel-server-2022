@@ -13,7 +13,7 @@ import { PromiseCache } from 'src/utils/promise-cache.utils'
     BotServersCacheService,
     {
       provide: PromiseCache,
-      useFactory: () => new PromiseCache(),
+      useValue: new PromiseCache(),
     },
   ],
   exports: [ServerMemberApiService],
