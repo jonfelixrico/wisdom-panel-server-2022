@@ -6,10 +6,12 @@ specifiers:
   '@nestjs/config': ^2.2.0
   '@nestjs/core': ^8.0.0
   '@nestjs/platform-express': ^8.0.0
+  '@nestjs/schedule': ^2.1.0
   '@nestjs/schematics': ^8.0.0
   '@nestjs/swagger': ^6.1.4
   '@nestjs/testing': ^8.0.0
   '@types/bluebird': ^3.5.38
+  '@types/cron': ^2.0.0
   '@types/express': ^4.17.13
   '@types/express-session': ^1.17.5
   '@types/jest': 27.5.0
@@ -56,6 +58,7 @@ dependencies:
   '@nestjs/config': 2.2.0_bkbhg4knmtesqnnagm7a2p5cuy
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
+  '@nestjs/schedule': 2.1.0_zysgbzrbqurgi5bpxpfkrj3lie
   '@nestjs/swagger': 6.1.4_yafhcryb2d5agjt3bea7yedc4i
   axios: 1.2.2
   bluebird: 3.7.2
@@ -80,6 +83,7 @@ devDependencies:
   '@nestjs/schematics': 8.0.11_typescript@4.8.4
   '@nestjs/testing': 8.4.7_yg656aic4dli3q2c2sx4xyqza4
   '@types/bluebird': 3.5.38
+  '@types/cron': 2.0.0
   '@types/express': 4.17.14
   '@types/express-session': 1.17.5
   '@types/jest': 27.5.0
@@ -1025,6 +1029,20 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
+  /@nestjs/schedule/2.1.0_zysgbzrbqurgi5bpxpfkrj3lie:
+    resolution: {integrity: sha512-4Xaw56WiW3VsxEPPnj/iDtfjcO+sUZyYAeRxD0gnF5havncxjAnv52Iw7UH3DuzzUA784xPGgGje3Fq0Gu925g==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0 || ^9.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 8.4.7_7qykjptmpv6nw3msxpcy26qr6q
+      '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
+      cron: 2.0.0
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
+    dev: false
+
   /@nestjs/schematics/8.0.11_nobats3jkocaued6l3papcxri4:
     resolution: {integrity: sha512-W/WzaxgH5aE01AiIErE9QrQJ73VR/M/8p8pq0LZmjmNcjZqU5kQyOWUxZg13WYfSpJdOa62t6TZRtFDmgZPoIg==}
     peerDependencies:
@@ -1214,6 +1232,13 @@ packages:
 
   /@types/cookiejar/2.1.2:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
+    dev: true
+
+  /@types/cron/2.0.0:
+    resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
+    dependencies:
+      '@types/luxon': 3.2.0
+      '@types/node': 16.11.68
     dev: true
 
   /@types/eslint-scope/3.7.4:
@@ -2222,6 +2247,12 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron/2.0.0:
+    resolution: {integrity: sha512-RPeRunBCFr/WEo7WLp8Jnm45F/ziGJiHVvVQEBSDTSGu6uHW49b2FOP2O14DcXlGJRLhwE7TIoDzHHK4KmlL6g==}
+    dependencies:
+      luxon: 1.28.1
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -3855,6 +3886,10 @@ packages:
   /lru-cache/7.14.1:
     resolution: {integrity: sha512-ysxwsnTKdAx96aTRdhDOCQfDgbHnt8SK0KY8SEjO0wHinhWOFTESbjVCMPbU1uGXg/ch4lifqx0wfjOawU2+WA==}
     engines: {node: '>=12'}
+
+  /luxon/1.28.1:
+    resolution: {integrity: sha512-gYHAa180mKrNIUJCbwpmD0aTu9kV0dREDrwNnuyFAsO1Wt0EVYSZelPnJlbj9HplzXX/YWXHFTL45kvZ53M0pw==}
+    dev: false
 
   /luxon/3.2.1:
     resolution: {integrity: sha512-QrwPArQCNLAKGO/C+ZIilgIuDnEnKx5QYODdDtbFaxzsbZcc/a7WFq7MhsVYgRlwawLtvOUESTlfJ+hc/USqPg==}
