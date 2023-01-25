@@ -18,6 +18,6 @@ import { ServerApiService } from './services/server-api/server-api.service'
     },
     ServerApiService,
   ],
-  exports: [ServerMemberApiService],
+  exports: [ServerMemberApiService, ServerApiService],
 })
 export class DiscordApiModule {}
