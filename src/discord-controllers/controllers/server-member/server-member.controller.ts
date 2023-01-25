@@ -10,7 +10,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { DiscordServerIdParam } from 'src/discord-api/decorators/discord-server-id-param.decorator'
 import { DiscordServerAccessGuard } from 'src/discord-api/guards/discord-server-access.guard'
 import { ServerMemberApiService } from 'src/discord-api/services/server-member-api/server-member-api.service'
-import { getMemberAvatarUrl } from 'src/discord-api/utils/avatar.util'
+import { getMemberAvatarUrl } from 'src/discord-controllers/utils/avatar.util'
 import { ServerMemberDto } from './server-member.dto'
 
 @UseGuards(DiscordServerAccessGuard)
