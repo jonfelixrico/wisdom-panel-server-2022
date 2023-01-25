@@ -1,7 +1,7 @@
 import {
   getMemberAvatarUrl,
   getUserAvatarUrl,
-} from 'src/discord-controllers/utils/avatar.util'
+} from 'src/discord-controllers/utils/image.util'
 
 describe('avatar utils', () => {
   describe('getMemberAvatarUrl', () => {
