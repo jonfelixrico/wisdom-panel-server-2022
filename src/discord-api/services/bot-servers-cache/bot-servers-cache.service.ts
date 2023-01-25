@@ -9,7 +9,7 @@ import {
 } from 'discord-api-types/v10'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
 import { isDiscordRateLimitError } from 'src/discord-api/utils/api-client.util'
-import { PromiseCache } from 'src/utils/promise-cache.utils'
+import { PromiseCache, SkippedRunError } from 'src/utils/promise-cache.utils'
 
 interface DiscordServer extends RESTAPIPartialCurrentUserGuild {
   fetchDt: Date
@@ -120,23 +120,42 @@ export class BotServersCacheService {
   }
 
   @Cron('*/10 * * * *')
-  runScheduledTask() {
-    this.promiseCache.run('bot-server-cache', async () => {
+  async runScheduledTask() {
+    const { LOGGER } = this
+
+    const toRun = async () => {
       /*
        * We want to include the logging here to make sure that these will only appear in the logs
        * if the job does get executed (the promise cache allows us)
        */
 
-      this.LOGGER.verbose('Started server fetch routine.')
+      LOGGER.log('Started cron job.')
       try {
         await this.fetchServers()
-        this.LOGGER.verbose('Finished fetch routine without errors.')
+        LOGGER.log('Finished cron job without errors.')
       } catch (e) {
-        this.LOGGER.error(
-          `Finished fetch routine with errors: ${e?.message}`,
+        LOGGER.error(`Finished cron job with errors: ${e?.message}`, e.stack)
+      }
+    }
+
+    try {
+      await this.promiseCache.run('bot-server-cache', toRun, {
+        throwIfSkipped: true,
+      })
+    } catch (e) {
+      if (!(e instanceof SkippedRunError)) {
+        LOGGER.error(
+          `Unexpected error in the cron job itself: ${e.message}`,
           e.stack,
         )
       }
-    })
+
+      /*
+       * We want to use warn since overlapping cron jobs is not a sign of normal operation.
+       */
+      LOGGER.warn(
+        'CRON job did not run since there was an already active instance.',
+      )
+    }
   }
 }
