@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Cron } from '@nestjs/schedule'
 import { Promise } from 'bluebird'
 import { Cache } from 'cache-manager'
 import {
@@ -111,16 +112,32 @@ export class BotServersCacheService {
     }
   }
 
-  private async fetchFnWrapper() {
-    // We only want one instance of fetchServers running at any given time to minimize chances of being rate limited.
-    return await this.cache.wrap('bot-server-cache', () => this.fetchServers())
-  }
-
   async getServers(): Promise<ServerMap> {
     if (this.lastCompletedFetch) {
-      await this.fetchFnWrapper()
+      await this.cache.wrap('bot-server-cache', () => this.fetchServers())
     }
 
     return this.servers
+  }
+
+  @Cron('*/10 * * * *')
+  runScheduledTask() {
+    this.cache.wrap('bot-server-cache', async () => {
+      /*
+       * We want to include the logging here to make sure that these will only appear in the logs
+       * if the job does get executed (the promise cache allows us)
+       */
+
+      this.LOGGER.verbose('Started server fetch routine.')
+      try {
+        await this.fetchServers()
+        this.LOGGER.verbose('Finished fetch routine without errors.')
+      } catch (e) {
+        this.LOGGER.error(
+          `Finished fetch routine with errors: ${e?.message}`,
+          e.stack,
+        )
+      }
+    })
   }
 }
