@@ -42,7 +42,7 @@ describe('BotServersCacheService', () => {
     })
   })
 
-  describe('fetching', () => {
+  describe('Batch-fetching', () => {
     test.todo('rate limit resiliency')
 
     test.todo('199 servers')
