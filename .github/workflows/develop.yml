@@ -7,7 +7,7 @@ on:
   push:
     branches: ['develop-*']
   pull_request:
-    branches: ['develop-*']
+    # run on each MR regardless of target
 
 jobs:
   run-tests:
