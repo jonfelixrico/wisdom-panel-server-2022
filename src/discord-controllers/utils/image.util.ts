@@ -57,9 +57,9 @@ export function getUserAvatarUrl(user: User): string {
   ).toString()
 }
 
-export function getServerIconUrl(guild: Pick<APIGuild, 'icon' | 'id'>) {
+export function getServerIconUrl(guild: Pick<APIGuild, 'icon' | 'id'>): string {
   return new URL(
     CDNRoutes.guildIcon(guild.id, guild.icon, getFormat(guild.icon)),
     RouteBases.cdn,
-  )
+  ).toString()
 }
