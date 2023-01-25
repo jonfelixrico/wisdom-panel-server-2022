@@ -24,7 +24,7 @@ export class ServerApiService {
     return servers[serverId] ?? null
   }
 
-  async getServers(): Promise<RESTAPIPartialCurrentUserGuild[]> {
+  async getBotServers(): Promise<RESTAPIPartialCurrentUserGuild[]> {
     const servers = await this.servers.getServers()
     return orderBy(Object.values(servers), ['name'], ['asc'])
   }
