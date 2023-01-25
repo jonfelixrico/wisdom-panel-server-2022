@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { Promise } from 'bluebird'
 import {
   RESTAPIPartialCurrentUserGuild,
@@ -22,6 +22,7 @@ const FETCH_LIMIT = 200
 @Injectable()
 export class BotServersCacheService {
   private servers: Record<string, DiscordServer> = {}
+  private readonly LOGGER = new Logger(BotServersCacheService.name)
 
   constructor(private api: DiscordBotApiClient) {}
 
@@ -36,9 +37,14 @@ export class BotServersCacheService {
   }
 
   async fetchServers() {
+    const { LOGGER } = this
+
     let lastId: string
+    let iterations = 0
 
     while (true) {
+      iterations++
+
       try {
         const result = await this.fetchServersFromDiscordApi({
           after: lastId,
@@ -65,9 +71,16 @@ export class BotServersCacheService {
         }
       } catch (e) {
         if (!isDiscordRateLimitError(e)) {
+          LOGGER.error(
+            `Error while fetcing servers: [${iterations}, ${lastId}] ${e.message}`,
+            e.stack,
+          )
           throw e
         }
 
+        LOGGER.debug(
+          `Rate limit while trying to fetch servers: [${iterations}, ${lastId}]: ${e.response.data.message}`,
+        )
         await Promise.delay(e.response.data.retry_after * 1000)
       }
     }
