@@ -1,4 +1,5 @@
 import {
+  APIGuild,
   APIGuildMember,
   APIUser,
   CDNRoutes,
@@ -54,4 +55,11 @@ export function getUserAvatarUrl(user: User): string {
     ),
     RouteBases.cdn,
   ).toString()
+}
+
+export function getServerIconUrl(guild: Pick<APIGuild, 'icon' | 'id'>) {
+  return new URL(
+    CDNRoutes.guildIcon(guild.id, guild.icon, getFormat(guild.icon)),
+    RouteBases.cdn,
+  )
 }
