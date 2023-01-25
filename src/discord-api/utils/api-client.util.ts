@@ -1,5 +1,11 @@
+import { HttpStatus } from '@nestjs/common'
 import axios, { Axios, AxiosError, isAxiosError } from 'axios'
-import { RouteBases, RESTJSONErrorCodes } from 'discord-api-types/v10'
+import {
+  RouteBases,
+  RESTError,
+  RESTRateLimit,
+  RESTJSONErrorCodes,
+} from 'discord-api-types/v10'
 import { DiscordUserOAuth2Credentials } from 'src/discord-oauth/types'
 
 export function createClient(accessToken: string, tokenType: string) {
@@ -30,10 +36,11 @@ export function createSessionUserClient(
   })
 }
 
-export type DiscordError = AxiosError<{
-  code: RESTJSONErrorCodes
-  message: string
-}>
+export type DiscordError = AxiosError<RESTError & { code: RESTJSONErrorCodes }>
+
+export type DiscordRateLimitError = AxiosError<
+  RESTRateLimit & { code?: RESTJSONErrorCodes }
+>
 
 export function isDiscordError(e: unknown): e is DiscordError {
   if (
@@ -55,4 +62,23 @@ export function isDiscordError(e: unknown): e is DiscordError {
    * See https://discord.com/developers/docs/topics/opcodes-and-status-codes#json
    */
   return typeof data?.code === 'number'
+}
+
+export function isDiscordRateLimitError(
+  e: unknown,
+): e is DiscordRateLimitError {
+  if (!isAxiosError<RESTRateLimit>(e)) {
+    return false
+  }
+
+  if (e.response.status !== HttpStatus.TOO_MANY_REQUESTS) {
+    return false
+  }
+
+  const { global, message, retry_after } = e.response?.data ?? {}
+  return (
+    typeof global === 'boolean' &&
+    typeof message === 'string' &&
+    typeof retry_after === 'number'
+  )
 }
