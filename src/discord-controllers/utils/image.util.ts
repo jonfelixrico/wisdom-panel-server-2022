@@ -39,6 +39,12 @@ export function getMemberAvatarUrl(serverId: string, member: Member): string {
   return getUserAvatarUrl(member.user)
 }
 
+export function getDefaultUserAvatarUrl(discriminator: string) {
+  return CDNRoutes.defaultUserAvatar(
+    (Number(discriminator) % 5) as DefaultUserAvatarAssets,
+  )
+}
+
 export function getUserAvatarUrl(user: User): string {
   if (user.avatar) {
     // user has an avatar
@@ -50,16 +56,26 @@ export function getUserAvatarUrl(user: User): string {
 
   // user has no avatar
   return new URL(
-    CDNRoutes.defaultUserAvatar(
-      (Number(user.discriminator) % 5) as DefaultUserAvatarAssets,
-    ),
+    getDefaultUserAvatarUrl(user.discriminator),
     RouteBases.cdn,
   ).toString()
 }
 
 export function getServerIconUrl(guild: Pick<APIGuild, 'icon' | 'id'>): string {
-  return new URL(
-    CDNRoutes.guildIcon(guild.id, guild.icon, getFormat(guild.icon)),
-    RouteBases.cdn,
-  ).toString()
+  let route: string
+
+  if (guild.icon) {
+    route = CDNRoutes.guildIcon(guild.id, guild.icon, getFormat(guild.icon))
+  } else {
+    // guild has no icon
+
+    const pseudoDiscriminator = /(\d{4})$/.exec(guild.id)[1]
+    /*
+     * There's no server counterpart for the default avatar,
+     * so we'll be retrofitting the one for the user instead
+     */
+    route = getDefaultUserAvatarUrl(pseudoDiscriminator)
+  }
+
+  return new URL(route, RouteBases.cdn).toString()
 }
