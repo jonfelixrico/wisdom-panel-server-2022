@@ -112,7 +112,7 @@ export class BotServersCacheService {
   }
 
   async getServers(): Promise<ServerMap> {
-    if (this.lastCompletedFetch) {
+    if (!this.lastCompletedFetch) {
       await this.promiseCache.run('bot-server-cache', () => this.fetchServers())
     }
 
