@@ -1,16 +1,15 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { Promise } from 'bluebird'
-import { Cache } from 'cache-manager'
 import {
   RESTAPIPartialCurrentUserGuild,
   RESTGetAPICurrentUserGuildsQuery,
   RESTGetAPICurrentUserGuildsResult,
   Routes,
 } from 'discord-api-types/v10'
-import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.provider'
 import { isDiscordRateLimitError } from 'src/discord-api/utils/api-client.util'
+import { PromiseCache } from 'src/utils/promise-cache.utils'
 
 interface DiscordServer extends RESTAPIPartialCurrentUserGuild {
   fetchDt: Date
@@ -33,7 +32,7 @@ export class BotServersCacheService {
 
   constructor(
     private api: DiscordBotApiClient,
-    @Inject(DISCORD_API_CACHE) private cache: Cache,
+    private promiseCache: PromiseCache,
   ) {}
 
   private pushResultsIntoMap(result: RESTGetAPICurrentUserGuildsResult) {
@@ -114,7 +113,7 @@ export class BotServersCacheService {
 
   async getServers(): Promise<ServerMap> {
     if (this.lastCompletedFetch) {
-      await this.cache.wrap('bot-server-cache', () => this.fetchServers())
+      await this.promiseCache.run('bot-server-cache', () => this.fetchServers())
     }
 
     return this.servers
@@ -122,7 +121,7 @@ export class BotServersCacheService {
 
   @Cron('*/10 * * * *')
   runScheduledTask() {
-    this.cache.wrap('bot-server-cache', async () => {
+    this.promiseCache.run('bot-server-cache', async () => {
       /*
        * We want to include the logging here to make sure that these will only appear in the logs
        * if the job does get executed (the promise cache allows us)
