@@ -5,7 +5,7 @@ import {
   RESTGetAPICurrentUserGuildsResult,
   Routes,
 } from 'discord-api-types/v10'
-import { orderBy } from 'lodash'
+import { keyBy } from 'lodash'
 import { DISCORD_API_CACHE } from 'src/discord-api/providers/discord-api-cache.provider'
 import { SessionUserClient } from 'src/discord-api/utils/api-client.util'
 import { BotServersCacheService } from '../bot-servers-cache/bot-servers-cache.service'
@@ -24,18 +24,19 @@ export class ServerApiService {
     return servers[serverId] ?? null
   }
 
-  async getBotServers(): Promise<RESTAPIPartialCurrentUserGuild[]> {
-    const servers = await this.servers.getServers()
-    return orderBy(Object.values(servers), ['name'], ['asc'])
+  async getBotServers(): Promise<
+    Record<string, RESTAPIPartialCurrentUserGuild>
+  > {
+    return await this.servers.getServers()
   }
 
   async getUserServers(
     client: SessionUserClient,
-  ): Promise<RESTGetAPICurrentUserGuildsResult> {
+  ): Promise<Record<string, RESTAPIPartialCurrentUserGuild>> {
     const url = Routes.userGuilds()
     return this.cache.wrap(`${client.userId}:${url}`, async () => {
       const { data } = await client.get<RESTGetAPICurrentUserGuildsResult>(url)
-      return data
+      return keyBy(data, (server) => server.id)
     })
   }
 }
