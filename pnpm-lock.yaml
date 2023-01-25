@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@golevelup/ts-jest': ^0.3.4
   '@nestjs/cli': ^8.0.0
   '@nestjs/common': ^8.0.0
   '@nestjs/config': ^2.2.0
@@ -79,6 +80,7 @@ dependencies:
   winston-daily-rotate-file: 4.7.1_winston@3.8.2
 
 devDependencies:
+  '@golevelup/ts-jest': 0.3.4
   '@nestjs/cli': 8.2.8
   '@nestjs/schematics': 8.0.11_typescript@4.8.4
   '@nestjs/testing': 8.4.7_yg656aic4dli3q2c2sx4xyqza4
@@ -581,6 +583,10 @@ packages:
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@golevelup/ts-jest/0.3.4:
+    resolution: {integrity: sha512-UXas4+20gNmYfVR7DTJ9iRppy00o0ElqQrRQyn9cF3Gq90iM1Xx1lKvipTEe5NniHDD9FiMZNweOfB+9ebZRZA==}
     dev: true
 
   /@humanwhocodes/config-array/0.10.7:
