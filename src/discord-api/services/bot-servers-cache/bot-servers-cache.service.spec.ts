@@ -41,4 +41,12 @@ describe('BotServersCacheService', () => {
       expect(promiseCache.run).not.toHaveBeenCalled()
     })
   })
+
+  describe('fetching', () => {
+    test.todo('rate limit resiliency')
+
+    test.todo('199 servers')
+    test.todo('200 servers')
+    test.todo('201 servers')
+  })
 })
