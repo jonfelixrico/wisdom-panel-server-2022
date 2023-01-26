@@ -94,7 +94,7 @@ export class BotServersCacheService implements OnApplicationBootstrap {
       } catch (e) {
         if (!isDiscordRateLimitError(e)) {
           LOGGER.error(
-            `Error while fetcing servers: [${iterations}, ${lastId}] ${e.message}`,
+            `Error while fetching servers: [${iterations}, ${lastId}] ${e.message}`,
             e.stack,
           )
           throw e
