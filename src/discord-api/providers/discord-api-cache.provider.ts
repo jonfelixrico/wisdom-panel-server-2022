@@ -15,8 +15,8 @@ export interface ApiCache extends Cache {
 export function provideDiscordApiCache(): Provider {
   return {
     provide: DISCORD_API_CACHE,
-    useFactory: async () => {
-      const promiseCache = new PromiseCache()
+    inject: [PromiseCache],
+    useFactory: async (promiseCache: PromiseCache) => {
       const dataCache = await caching('memory', {
         max: 100,
         ttl: 60 * 1000,

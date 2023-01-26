@@ -18,21 +18,26 @@ import {
   SessionUserClient,
 } from 'src/discord-api/utils/api-client.util'
 import { keyBy } from 'lodash'
+import { ServerApiService } from '../server-api/server-api.service'
 
 @Injectable()
 export class ServerMemberApiService {
   constructor(
-    private api: DiscordBotApiClient,
+    private apiClient: DiscordBotApiClient,
     @Inject(DISCORD_API_CACHE) private cache: ApiCache,
+    private serverApi: ServerApiService,
   ) {}
 
+  /**
+   * @deprecated
+   */
   private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
     return await this.cache.wrapV2(
       url,
       async () => {
         try {
-          const { data } = await this.api.get(url, {
+          const { data } = await this.apiClient.get(url, {
             params: {
               with_counts: true,
             } as RESTGetAPIGuildQuery,
@@ -63,11 +68,14 @@ export class ServerMemberApiService {
     return await this.cache.wrapV2(
       url,
       async () => {
-        const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
-          params: {
-            limit: 1_000,
-          } as RESTGetAPIGuildMembersQuery,
-        })
+        const { data } = await this.apiClient.get<RESTGetAPIGuildMembersResult>(
+          url,
+          {
+            params: {
+              limit: 1_000,
+            } as RESTGetAPIGuildMembersQuery,
+          },
+        )
 
         return keyBy(data, (member) => member.user.id)
       },
@@ -76,7 +84,14 @@ export class ServerMemberApiService {
   }
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
-    return !!(await this.getServer(serverId))
+    /*
+     * We're not using `this.serverApi` here to save up on the rate limit.
+     *
+     * `this.serverApi` has some properties which are absent in `serverApi.getServer`, but these
+     * properties are not needed here so we're using the "economic" version.
+     */
+    const server = await this.serverApi.getServer(serverId)
+    return !!server
   }
 
   async getMember(
@@ -121,7 +136,9 @@ export class ServerMemberApiService {
     const url = Routes.guildMember(serverId, userId)
     return await this.cache.wrapV2(url, async () => {
       try {
-        const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(url)
+        const { data } = await this.apiClient.get<RESTGetAPIGuildMemberResult>(
+          url,
+        )
         return data
       } catch (e) {
         // handle user not being a member of the server
