@@ -1,5 +1,11 @@
 import { Controller, Get } from '@nestjs/common'
-import { ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger'
+import {
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger'
 import { SessionUserDiscordApi } from 'src/discord-api/decorators/session-user-discord-api.decorator'
 import { ServerApiService } from 'src/discord-api/services/server-api/server-api.service'
 import { SessionUserClient } from 'src/discord-api/utils/api-client.util'
@@ -7,10 +13,16 @@ import { getServerIconUrl } from 'src/discord-controllers/utils/image.util'
 import { ServerDto } from './server.dto'
 
 @Controller('server')
+@ApiTags('discord')
 @ApiExtraModels(ServerDto)
 export class ServerController {
   constructor(private serverApi: ServerApiService) {}
 
+  @ApiOperation({
+    operationId: 'getServers',
+    summary:
+      'Get the list of servers accessible to both the bot and the session user.',
+  })
   @ApiOkResponse({
     status: 200,
     schema: {
