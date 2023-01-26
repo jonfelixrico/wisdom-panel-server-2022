@@ -26,6 +26,9 @@ export class ServerMemberApiService {
     @Inject(DISCORD_API_CACHE) private cache: ApiCache,
   ) {}
 
+  /**
+   * @deprecated
+   */
   private async getServer(serverId: string): Promise<RESTGetAPIGuildResult> {
     const url = Routes.guild(serverId)
     return await this.cache.wrapV2(

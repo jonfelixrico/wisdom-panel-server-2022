@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
 import { Cron } from '@nestjs/schedule'
 import { Promise } from 'bluebird'
 import {
@@ -11,21 +11,18 @@ import { DiscordBotApiClient } from 'src/discord-api/providers/discord-bot-api.p
 import { isDiscordRateLimitError } from 'src/discord-api/utils/api-client.util'
 import { PromiseCache, SkippedRunError } from 'src/utils/promise-cache.utils'
 
-interface DiscordServer extends RESTAPIPartialCurrentUserGuild {
-  fetchDt: Date
-}
-
 /**
  * This is how many server data we want to pull per call.
  * This value is the max that Discord allows.
  */
 const FETCH_LIMIT = 200
 
-type ServerMap = Record<string, DiscordServer>
-
 @Injectable()
-export class BotServersCacheService {
-  private servers: ServerMap = {}
+export class BotServersCacheService implements OnApplicationBootstrap {
+  private servers: Record<
+    string,
+    RESTAPIPartialCurrentUserGuild & { fetchDt: Date }
+  > = {}
   private lastCompletedFetch: Date
 
   private readonly LOGGER = new Logger(BotServersCacheService.name)
@@ -111,7 +108,7 @@ export class BotServersCacheService {
     }
   }
 
-  async getServers(): Promise<ServerMap> {
+  async getServers(): Promise<Record<string, RESTAPIPartialCurrentUserGuild>> {
     if (!this.lastCompletedFetch) {
       await this.promiseCache.run('bot-server-cache', () => this.fetchServers())
     }
@@ -157,5 +154,9 @@ export class BotServersCacheService {
         'CRON job did not run since there was an already active instance.',
       )
     }
+  }
+
+  onApplicationBootstrap() {
+    this.runScheduledTask()
   }
 }
