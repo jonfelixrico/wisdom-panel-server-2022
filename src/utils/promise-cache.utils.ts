@@ -1,6 +1,16 @@
 import { Logger } from '@nestjs/common'
 import { nanoid } from 'nanoid'
 
+export interface RunOptions {
+  throwIfSkipped?: boolean
+}
+
+export class SkippedRunError extends Error {
+  constructor(id: string) {
+    super(`Job [${id}] is already running.`)
+  }
+}
+
 /*
  * This util is intended to handle the scenario where you want an async method to only have a single
  * running instance at any given time.
@@ -29,12 +39,20 @@ export class PromiseCache {
     return this.cache[key] as Promise<T>
   }
 
-  run<T>(key: string, asyncFn: () => Promise<T>): Promise<T> {
+  run<T>(
+    key: string,
+    asyncFn: () => Promise<T>,
+    options?: RunOptions,
+  ): Promise<T> {
     const { LOGGER } = this
 
     const cached = this.getCached<T>(key)
     if (cached) {
       LOGGER.debug(`${key}: promise already running.`)
+      if (options?.throwIfSkipped) {
+        throw new SkippedRunError(key)
+      }
+
       return cached
     }
 
