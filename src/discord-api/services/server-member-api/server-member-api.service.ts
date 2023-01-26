@@ -23,7 +23,7 @@ import { ServerApiService } from '../server-api/server-api.service'
 @Injectable()
 export class ServerMemberApiService {
   constructor(
-    private api: DiscordBotApiClient,
+    private apiClient: DiscordBotApiClient,
     @Inject(DISCORD_API_CACHE) private cache: ApiCache,
     private serverApi: ServerApiService,
   ) {}
@@ -37,7 +37,7 @@ export class ServerMemberApiService {
       url,
       async () => {
         try {
-          const { data } = await this.api.get(url, {
+          const { data } = await this.apiClient.get(url, {
             params: {
               with_counts: true,
             } as RESTGetAPIGuildQuery,
@@ -68,11 +68,14 @@ export class ServerMemberApiService {
     return await this.cache.wrapV2(
       url,
       async () => {
-        const { data } = await this.api.get<RESTGetAPIGuildMembersResult>(url, {
-          params: {
-            limit: 1_000,
-          } as RESTGetAPIGuildMembersQuery,
-        })
+        const { data } = await this.apiClient.get<RESTGetAPIGuildMembersResult>(
+          url,
+          {
+            params: {
+              limit: 1_000,
+            } as RESTGetAPIGuildMembersQuery,
+          },
+        )
 
         return keyBy(data, (member) => member.user.id)
       },
@@ -133,7 +136,9 @@ export class ServerMemberApiService {
     const url = Routes.guildMember(serverId, userId)
     return await this.cache.wrapV2(url, async () => {
       try {
-        const { data } = await this.api.get<RESTGetAPIGuildMemberResult>(url)
+        const { data } = await this.apiClient.get<RESTGetAPIGuildMemberResult>(
+          url,
+        )
         return data
       } catch (e) {
         // handle user not being a member of the server
