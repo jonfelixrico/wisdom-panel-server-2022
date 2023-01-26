@@ -18,12 +18,14 @@ import {
   SessionUserClient,
 } from 'src/discord-api/utils/api-client.util'
 import { keyBy } from 'lodash'
+import { ServerApiService } from '../server-api/server-api.service'
 
 @Injectable()
 export class ServerMemberApiService {
   constructor(
     private api: DiscordBotApiClient,
     @Inject(DISCORD_API_CACHE) private cache: ApiCache,
+    private serverApi: ServerApiService,
   ) {}
 
   /**
@@ -79,7 +81,14 @@ export class ServerMemberApiService {
   }
 
   async isBotMemberOf(serverId: string): Promise<boolean> {
-    return !!(await this.getServer(serverId))
+    /*
+     * We're not using `this.serverApi` here to save up on the rate limit.
+     *
+     * `this.serverApi` has some properties which are absent in `serverApi.getServer`, but these
+     * properties are not needed here so we're using the "economic" version.
+     */
+    const server = await this.serverApi.getServer(serverId)
+    return !!server
   }
 
   async getMember(
