@@ -49,6 +49,9 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Run E2E tests
         run: pnpm test:unit
+
+  # these two down here are checks to report static errors, similar to a java compiler
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
