@@ -1,4 +1,4 @@
-export interface WisdomApiQuoteReceiveDto {
+export interface WisdomAPIQuoteReceive {
   id: string
   timestamp: Date
   userId: string
@@ -13,7 +13,7 @@ export interface WisdomAPIStatusDeclaration {
   timestamp: Date
 }
 
-export interface WisdomApiQuoteDto {
+export interface WisdomAPIQuote {
   id: string
   content: string
   authorId: string
@@ -23,7 +23,7 @@ export interface WisdomApiQuoteDto {
   serverId: string
   channelId: string
   messageId: string
-  receives: WisdomApiQuoteReceiveDto[]
+  receives: WisdomAPIQuoteReceive[]
   statusDeclaration: WisdomAPIStatusDeclaration | null
   votes: Record<string, Date>
   requiredVoteCount: number
