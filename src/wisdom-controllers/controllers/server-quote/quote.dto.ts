@@ -5,7 +5,7 @@ import {
 } from 'src/wisdom-api/dto/quote.wisdom-dto'
 import { WisdomRESTListQuotesQuery } from 'src/wisdom-api/services/quote-api/quote-api.service'
 
-export class QuoteReceiveResult implements WisdomAPIQuoteReceive {
+export class QuoteReceive implements WisdomAPIQuoteReceive {
   timestamp: Date
   serverId: string
   channelId: string
@@ -15,18 +15,18 @@ export class QuoteReceiveResult implements WisdomAPIQuoteReceive {
   userId: string
 }
 
-export class StatusDeclarationResult implements WisdomAPIStatusDeclaration {
+export class StatusDeclaration implements WisdomAPIStatusDeclaration {
   status: string
   timestamp: Date
 }
 
-export class QuoteResult implements WisdomAPIQuote {
+export class Quote implements WisdomAPIQuote {
   expirationDt: Date
   serverId: string
   channelId: string
   messageId: string
-  receives: QuoteReceiveResult[]
-  statusDeclaration: StatusDeclarationResult | null
+  receives: QuoteReceive[]
+  statusDeclaration: StatusDeclaration | null
   votes: Record<string, Date>
   requiredVoteCount: number
   isLegacy: boolean
@@ -37,6 +37,9 @@ export class QuoteResult implements WisdomAPIQuote {
   submitterId: string
   submitDt: Date
 }
+
+export type RESTGetQuoteResult = Quote
+export type RESTListQuotesResult = Quote[]
 
 export class RESTListQuotesQuery implements WisdomRESTListQuotesQuery {
   after?: string
