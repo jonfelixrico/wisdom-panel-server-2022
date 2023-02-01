@@ -29,7 +29,7 @@ export class QuoteApiService {
   ): Promise<WisdomApiQuoteDto> {
     try {
       const { data } = await this.api.get<WisdomApiQuoteDto>(
-        `server/${serverId}/quote/${quoteId}`,
+        `v2/server/${serverId}/quote/${quoteId}`,
       )
 
       return plainToInstance(QuoteCt, data)
