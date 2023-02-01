@@ -3,6 +3,7 @@ import {
   WisdomAPIQuoteReceive,
   WisdomAPIStatusDeclaration,
 } from 'src/wisdom-api/dto/quote.wisdom-dto'
+import { WisdomRESTListQuotesQuery } from 'src/wisdom-api/services/quote-api/quote-api.service'
 
 export class QuoteReceiveResult implements WisdomAPIQuoteReceive {
   timestamp: Date
@@ -35,4 +36,9 @@ export class QuoteResult implements WisdomAPIQuote {
   authorId: string
   submitterId: string
   submitDt: Date
+}
+
+export class RESTListQuotesQuery implements WisdomRESTListQuotesQuery {
+  after?: string
+  limit?: number
 }

@@ -8,8 +8,8 @@ import { QuoteTransformer } from './quote-transformer.class'
 export type WisdomRESTGetQuoteResult = WisdomAPIQuote
 export type WisdomRESTListQuotesResult = WisdomAPIQuote[]
 export interface WisdomRESTListQuotesQuery {
-  after?: string
-  limit?: number
+  after: string
+  limit: number
 }
 
 @Injectable()
