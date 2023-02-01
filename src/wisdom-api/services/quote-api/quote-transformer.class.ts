@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import {
   WisdomAPIQuote,
   WisdomAPIQuoteReceive,
@@ -6,7 +7,9 @@ import {
 
 class QuoteReceiveTransformer implements WisdomAPIQuoteReceive {
   id: string
+  @Type(() => Date)
   timestamp: Date
+
   userId: string
   serverId: string
   channelId: string
@@ -16,6 +19,8 @@ class QuoteReceiveTransformer implements WisdomAPIQuoteReceive {
 
 class StatusDeclarationTransformer implements WisdomAPIStatusDeclaration {
   status: string
+
+  @Type(() => Date)
   timestamp: Date
 }
 
@@ -24,8 +29,13 @@ export class QuoteTransformer implements WisdomAPIQuote {
   content: string
   authorId: string
   submitterId: string
+
+  @Type(() => Date)
   submitDt: Date
+
+  @Type(() => Date)
   expirationDt: Date
+
   serverId: string
   channelId: string
   messageId: string
