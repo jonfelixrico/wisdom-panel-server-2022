@@ -3,13 +3,18 @@ import {
   Get,
   NotFoundException,
   Param,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { DiscordServerIdParam } from 'src/discord-api/decorators/discord-server-id-param.decorator'
 import { DiscordServerAccessGuard } from 'src/discord-api/guards/discord-server-access.guard'
 import { QuoteApiService } from 'src/wisdom-api/services/quote-api/quote-api.service'
-import { QuoteDto } from 'src/wisdom-controllers/dto/quote.dto'
+import {
+  RESTGetQuoteResult,
+  RESTListQuotesQuery,
+  RESTListQuotesResult,
+} from 'src/wisdom-controllers/controllers/server-quote/quote.dto'
 
 @UseGuards(DiscordServerAccessGuard)
 @ApiTags('wisdom')
@@ -31,8 +36,27 @@ export class ServerQuoteController {
     // TODO make required
     @Param('serverId') serverId: string,
     @Param('quoteId') quoteId: string,
-  ): Promise<QuoteDto> {
+  ): Promise<RESTGetQuoteResult> {
     const quote = await this.quoteApi.getQuote(serverId, quoteId)
+    if (!quote) {
+      throw new NotFoundException()
+    }
+
+    return quote
+  }
+
+  @ApiOperation({
+    operationId: 'listQuote',
+    summary: 'List the quotes from a server',
+  })
+  @DiscordServerIdParam()
+  @Get()
+  async listQuote(
+    // TODO make required
+    @Param('serverId') serverId: string,
+    @Query() query: RESTListQuotesQuery,
+  ): Promise<RESTListQuotesResult> {
+    const quote = await this.quoteApi.listQuotes(serverId, query)
     if (!quote) {
       throw new NotFoundException()
     }
