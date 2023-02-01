@@ -1,22 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common'
 import { isAxiosError } from 'axios'
-import {
-  WisdomApiQuoteDto,
-  WisdomApiQuoteReceiveDto,
-} from 'src/wisdom-api/dto/quote.wisdom-dto'
+import { WisdomAPIQuote } from 'src/wisdom-api/dto/quote.wisdom-dto'
 import { WisdomApiClient } from 'src/wisdom-api/providers/wisdom-api-client.provider'
-import { plainToInstance, Type } from 'class-transformer'
+import { plainToInstance } from 'class-transformer'
+import { QuoteTransformer } from './quote-transformer.class'
 
-class QuoteCt implements WisdomApiQuoteDto {
-  id: string
-  content: string
-  authorId: string
-  submitterId: string
-
-  @Type(() => Date)
-  submitDt: Date
-  // not yet necessary to create a CT class for the receive since it doesnt have any types which require processing
-  receives: WisdomApiQuoteReceiveDto[]
+export type WisdomRESTGetQuoteResult = WisdomAPIQuote
+export type WisdomRESTListQuotesResult = WisdomAPIQuote[]
+export interface WisdomRESTListQuotesQuery {
+  after?: string
+  limit?: number
 }
 
 @Injectable()
@@ -26,13 +19,13 @@ export class QuoteApiService {
   async getQuote(
     serverId: string,
     quoteId: string,
-  ): Promise<WisdomApiQuoteDto> {
+  ): Promise<WisdomRESTGetQuoteResult> {
     try {
-      const { data } = await this.api.get<WisdomApiQuoteDto>(
-        `server/${serverId}/quote/${quoteId}`,
+      const { data } = await this.api.get<WisdomRESTGetQuoteResult>(
+        `v2/server/${serverId}/quote/${quoteId}`,
       )
 
-      return plainToInstance(QuoteCt, data)
+      return plainToInstance(QuoteTransformer, data)
     } catch (e) {
       if (isAxiosError(e) && e.status === HttpStatus.NOT_FOUND) {
         return null
@@ -40,5 +33,19 @@ export class QuoteApiService {
 
       throw e
     }
+  }
+
+  async listQuotes(
+    serverId: string,
+    options?: WisdomRESTListQuotesQuery,
+  ): Promise<WisdomRESTListQuotesResult> {
+    const { data } = await this.api.get<WisdomAPIQuote[]>(
+      `v2/server/${serverId}/quote`,
+      {
+        params: options,
+      },
+    )
+
+    return plainToInstance(QuoteTransformer, data)
   }
 }
