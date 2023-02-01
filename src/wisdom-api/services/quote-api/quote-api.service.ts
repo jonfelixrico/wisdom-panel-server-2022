@@ -7,6 +7,10 @@ import { QuoteTransformer } from './quote-transformer.class'
 
 export type WisdomRESTGetQuoteResult = WisdomAPIQuote
 export type WisdomRESTListQuotesResult = WisdomAPIQuote[]
+export interface WisdomRESTListQuotesQuery {
+  after?: string
+  limit?: number
+}
 
 @Injectable()
 export class QuoteApiService {
@@ -31,9 +35,15 @@ export class QuoteApiService {
     }
   }
 
-  async listQuotes(serverId: string): Promise<WisdomRESTListQuotesResult> {
+  async listQuotes(
+    serverId: string,
+    options?: WisdomRESTListQuotesQuery,
+  ): Promise<WisdomRESTListQuotesResult> {
     const { data } = await this.api.get<WisdomAPIQuote[]>(
       `v2/server/${serverId}/quote`,
+      {
+        params: options,
+      },
     )
 
     return plainToInstance(QuoteTransformer, data)
