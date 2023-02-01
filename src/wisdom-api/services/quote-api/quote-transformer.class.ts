@@ -1,4 +1,5 @@
-import { Type } from 'class-transformer'
+import { Transform, Type } from 'class-transformer'
+import { mapValues } from 'lodash'
 import {
   WisdomAPIQuote,
   WisdomAPIQuoteReceive,
@@ -39,9 +40,18 @@ export class QuoteTransformer implements WisdomAPIQuote {
   serverId: string
   channelId: string
   messageId: string
+
+  @Type(() => QuoteReceiveTransformer)
   receives: QuoteReceiveTransformer[]
+
+  @Type(() => StatusDeclarationTransformer)
   statusDeclaration: StatusDeclarationTransformer
+
+  @Transform(({ value }: { value: Record<string, string> }) =>
+    mapValues(value, (serializedDate) => new Date(serializedDate)),
+  )
   votes: Record<string, Date>
+
   requiredVoteCount: number
   isLegacy: boolean
   revision: number
