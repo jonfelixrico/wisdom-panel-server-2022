@@ -24,4 +24,12 @@ export class QuoteApiService {
       throw e
     }
   }
+
+  async listQuotes(serverId: string): Promise<WisdomAPIQuote[]> {
+    const { data } = await this.api.get<WisdomAPIQuote[]>(
+      `v2/server/${serverId}/quote`,
+    )
+
+    return plainToInstance(QuoteTransformer, data)
+  }
 }
