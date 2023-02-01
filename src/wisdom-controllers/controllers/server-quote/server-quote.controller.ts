@@ -9,7 +9,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { DiscordServerIdParam } from 'src/discord-api/decorators/discord-server-id-param.decorator'
 import { DiscordServerAccessGuard } from 'src/discord-api/guards/discord-server-access.guard'
 import { QuoteApiService } from 'src/wisdom-api/services/quote-api/quote-api.service'
-import { Quote } from 'src/wisdom-controllers/controllers/server-quote/quote.dto'
+import { QuoteResult } from 'src/wisdom-controllers/controllers/server-quote/quote.dto'
 
 @UseGuards(DiscordServerAccessGuard)
 @ApiTags('wisdom')
@@ -31,7 +31,7 @@ export class ServerQuoteController {
     // TODO make required
     @Param('serverId') serverId: string,
     @Param('quoteId') quoteId: string,
-  ): Promise<Quote> {
+  ): Promise<QuoteResult> {
     const quote = await this.quoteApi.getQuote(serverId, quoteId)
     if (!quote) {
       throw new NotFoundException()

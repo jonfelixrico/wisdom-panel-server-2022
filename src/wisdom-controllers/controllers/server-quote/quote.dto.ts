@@ -4,7 +4,7 @@ import {
   WisdomAPIStatusDeclaration,
 } from 'src/wisdom-api/dto/quote.wisdom-dto'
 
-export class QuoteReceive implements WisdomAPIQuoteReceive {
+export class QuoteReceiveResult implements WisdomAPIQuoteReceive {
   timestamp: Date
   serverId: string
   channelId: string
@@ -14,18 +14,18 @@ export class QuoteReceive implements WisdomAPIQuoteReceive {
   userId: string
 }
 
-export class StatusDeclaration implements WisdomAPIStatusDeclaration {
+export class StatusDeclarationResult implements WisdomAPIStatusDeclaration {
   status: string
   timestamp: Date
 }
 
-export class Quote implements WisdomAPIQuote {
+export class QuoteResult implements WisdomAPIQuote {
   expirationDt: Date
   serverId: string
   channelId: string
   messageId: string
-  receives: QuoteReceive[]
-  statusDeclaration: StatusDeclaration | null
+  receives: QuoteReceiveResult[]
+  statusDeclaration: StatusDeclarationResult | null
   votes: Record<string, Date>
   requiredVoteCount: number
   isLegacy: boolean
