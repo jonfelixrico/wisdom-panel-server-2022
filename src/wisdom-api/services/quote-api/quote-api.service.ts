@@ -5,13 +5,19 @@ import { WisdomApiClient } from 'src/wisdom-api/providers/wisdom-api-client.prov
 import { plainToInstance } from 'class-transformer'
 import { QuoteTransformer } from './quote-transformer.class'
 
+export type WisdomRESTGetQuoteResult = WisdomAPIQuote
+export type WisdomRESTListQuotesResult = WisdomAPIQuote[]
+
 @Injectable()
 export class QuoteApiService {
   constructor(private api: WisdomApiClient) {}
 
-  async getQuote(serverId: string, quoteId: string): Promise<WisdomAPIQuote> {
+  async getQuote(
+    serverId: string,
+    quoteId: string,
+  ): Promise<WisdomRESTGetQuoteResult> {
     try {
-      const { data } = await this.api.get<WisdomAPIQuote>(
+      const { data } = await this.api.get<WisdomRESTGetQuoteResult>(
         `v2/server/${serverId}/quote/${quoteId}`,
       )
 
@@ -25,7 +31,7 @@ export class QuoteApiService {
     }
   }
 
-  async listQuotes(serverId: string): Promise<WisdomAPIQuote[]> {
+  async listQuotes(serverId: string): Promise<WisdomRESTListQuotesResult> {
     const { data } = await this.api.get<WisdomAPIQuote[]>(
       `v2/server/${serverId}/quote`,
     )
