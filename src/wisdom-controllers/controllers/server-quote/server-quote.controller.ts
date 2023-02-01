@@ -9,7 +9,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { DiscordServerIdParam } from 'src/discord-api/decorators/discord-server-id-param.decorator'
 import { DiscordServerAccessGuard } from 'src/discord-api/guards/discord-server-access.guard'
 import { QuoteApiService } from 'src/wisdom-api/services/quote-api/quote-api.service'
-import { Quote } from 'src/wisdom-controllers/dto/quote.dto'
+import { Quote } from 'src/wisdom-controllers/controllers/server-quote/quote.dto'
 
 @UseGuards(DiscordServerAccessGuard)
 @ApiTags('wisdom')
