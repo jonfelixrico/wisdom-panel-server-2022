@@ -26,7 +26,7 @@ jobs:
         id: semver_parser 
         uses: booxmedialtd/ws-action-parse-semver@v1
         with:
-          input_string: ${{ steps.branch-name.outputs.current_branch }}
+          input_string: ${{ steps.branch-name.outputs.base_ref_branch || steps.branch-name.outputs.current_branch }}
           version_extractor_regex: '.*develop-(.*)$'
       - name: Show semver string
         shell: bash
