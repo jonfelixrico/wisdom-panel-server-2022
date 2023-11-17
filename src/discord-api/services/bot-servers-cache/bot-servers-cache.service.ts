@@ -116,8 +116,7 @@ export class BotServersCacheService implements OnApplicationBootstrap {
     return this.servers
   }
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
-  async runScheduledTask() {
+  async runCronJob () {
     const { LOGGER } = this
 
     const toRun = async () => {
@@ -156,7 +155,12 @@ export class BotServersCacheService implements OnApplicationBootstrap {
     }
   }
 
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async runScheduledTask() {
+    this.runCronJob()
+  }
+
   onApplicationBootstrap() {
-    this.runScheduledTask()
+    this.runCronJob()
   }
 }
