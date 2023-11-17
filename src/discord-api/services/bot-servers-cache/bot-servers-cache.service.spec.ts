@@ -75,7 +75,7 @@ describe('BotServersCacheService', () => {
     })
 
     jest.useFakeTimers()
-    it('has a cron job to poll servers', async () => {
+    it('has a cron job to refresh server list', async () => {
       const app = module.createNestApplication()
       await app.init()
       expect(runCronJob).toHaveBeenCalledTimes(1)
