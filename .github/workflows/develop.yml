@@ -1,14 +1,18 @@
-name: Alpha pipeline
+name: Develop branch pipeline
 
 on:
   push:
     branches:
-      - alpha-*
+      - 'develop-*'
+  pull_request:
+    branches:
+      - 'develop-*'
 
 jobs:
   run-tests:
     uses: ./.github/workflows/run-tests.reusable.yml
-  build:
+  build-and-publish:
+    if: ${{ github.event_name == 'push' }}
     needs: [run-tests]
     runs-on: ubuntu-latest
     steps:
