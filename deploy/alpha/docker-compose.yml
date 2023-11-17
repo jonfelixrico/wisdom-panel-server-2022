@@ -17,7 +17,3 @@ services:
     restart: unless-stopped
     ports:
       - 9080:80
-    volumes:
-      - ./nginx/templates:/etc/nginx/templates
-    environment:
-      - API_BASE_URL=http://backend:9085
