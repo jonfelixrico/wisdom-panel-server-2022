@@ -5,7 +5,8 @@ name: Non-mainline PR
 
 on:
   pull_request:
-    branches-ignore: ['develop-*']
+    branches-ignore:
+      - 'develop-*'
 
 jobs:
   run-tests:
