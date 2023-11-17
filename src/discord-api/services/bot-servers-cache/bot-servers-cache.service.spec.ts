@@ -45,7 +45,7 @@ describe('BotServersCacheService', () => {
 
   describe('cron job', () => {
     let module: TestingModule
-    let promiseService: PromiseCache
+    let runCronJob: jest.SpyInstance
 
     beforeEach(async () => {
       module = await Test.createTestingModule({
@@ -65,23 +65,23 @@ describe('BotServersCacheService', () => {
         ]
       }).compile()
 
-      promiseService = module.get(PromiseCache)
+      runCronJob = jest.spyOn(module.get(BotServersCacheService), 'runCronJob')
     })
 
     it('fetches the server list on boot', async () => {
       const app = module.createNestApplication()
       await app.init()
-      expect(promiseService.run).toHaveBeenCalledTimes(1)
+      expect(runCronJob).toHaveBeenCalledTimes(1)
     })
 
     jest.useFakeTimers()
     it('has a cron job to poll servers', async () => {
       const app = module.createNestApplication()
       await app.init()
-      expect(promiseService.run).toHaveBeenCalledTimes(1)
+      expect(runCronJob).toHaveBeenCalledTimes(1)
 
       jest.advanceTimersByTime(1000 * 60 * 10)
-      expect(promiseService.run).toHaveBeenCalledTimes(2)
+      expect(runCronJob).toHaveBeenCalledTimes(2)
     })
   })
 
