@@ -39,8 +39,18 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            jonfelixrico/wisdom-panel-server
+          tags: |
+            alpha-${{ steps.semver_parser.outputs.major }}
+            alpha-${{ steps.semver_parser.outputs.major }}.${{ steps.semver_parser.outputs.minor }}
       - name: Build and push to DockerHub
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: jonfelixrico/wisdom-panel-server:${{steps.branch-name.outputs.current_branch}},jonfelixrico/wisdom-panel-server:alpha
+          tags: ${{ steps.meta.outputs.tags }}
