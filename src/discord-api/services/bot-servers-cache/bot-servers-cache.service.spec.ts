@@ -43,7 +43,7 @@ describe('BotServersCacheService', () => {
     })
   })
 
-  describe('cron job', () => {
+  describe('server fetch routine', () => {
     let module: TestingModule
     let runCronJob: jest.SpyInstance
 
