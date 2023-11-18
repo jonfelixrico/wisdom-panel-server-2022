@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ApiOperation } from '@nestjs/swagger'
 import { PublicRoute } from 'src/decorators/public-route.decorator'
+import { SystemParameters } from './system-parameters.type'
 
 @Controller('system-parameters')
 export class SystemParametersController {
@@ -13,9 +14,9 @@ export class SystemParametersController {
     description: 'Lists out the system parameters to be exposed to the FE',
     operationId: 'getPublicSysPars',
   })
-  getPublicParameters(): Record<string, string> {
+  getPublicParameters(): SystemParameters {
     return {
-      DISCORD_BOT_INVITE_URL: this.cfg.getOrThrow('DISCORD_BOT_INVITE_URL'),
+      discordBotInviteUrl: this.cfg.getOrThrow('DISCORD_BOT_INVITE_URL'),
     }
   }
 }
