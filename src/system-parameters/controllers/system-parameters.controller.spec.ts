@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { SystemParametersController } from './system-parameters.controller'
 import * as request from 'supertest'
 import { ConfigModule } from '@nestjs/config'
+import { HttpStatus } from '@nestjs/common'
 
 describe('SystemParametersController', () => {
   let module: TestingModule
@@ -9,7 +10,11 @@ describe('SystemParametersController', () => {
   beforeEach(async () => {
     module = await Test.createTestingModule({
       controllers: [SystemParametersController],
-      imports: [ConfigModule.forRoot()],
+      imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env.test',
+        }),
+      ],
     }).compile()
   })
 
@@ -17,12 +22,15 @@ describe('SystemParametersController', () => {
     const app = await module.createNestApplication().init()
     await request(app.getHttpServer())
       .get('/system-parameters')
-      .expect(
-        expect.objectContaining({
-          // these are from the .env.test file
+      .expect(HttpStatus.OK)
+      .expect((res) =>
+        expect(res.body).toEqual(
+          expect.objectContaining({
+            // these are from the .env.test file
 
-          discordBotInviteUrl: 'https://discord-bot-invite-url',
-        }),
+            discordBotInviteUrl: 'https://discord-bot-invite-url',
+          }),
+        ),
       )
   })
 })
