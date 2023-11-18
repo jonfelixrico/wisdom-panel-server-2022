@@ -9,6 +9,7 @@ import { WisdomApiModule } from './wisdom-api/wisdom-api.module'
 import { WisdomControllersModule } from './wisdom-controllers/wisdom-controllers.module'
 import { DiscordControllersModule } from './discord-controllers/discord-controllers.module'
 import { InjectSessionUserDiscordApiClientInterceptor } from './discord-api/interceptors/inject-session-user-discord-api-client/inject-session-user-discord-api-client.interceptor'
+import { ScheduleModule } from '@nestjs/schedule'
 
 function setUpEnvFilePath(): string[] {
   if (process.env.NODE_ENV === 'test') {
@@ -30,6 +31,7 @@ function setUpEnvFilePath(): string[] {
     WisdomApiModule,
     WisdomControllersModule,
     DiscordControllersModule,
+    ScheduleModule.forRoot()
   ],
   controllers: [],
   providers: [

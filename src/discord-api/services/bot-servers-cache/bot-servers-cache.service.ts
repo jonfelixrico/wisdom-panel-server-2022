@@ -1,5 +1,5 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common'
-import { Cron } from '@nestjs/schedule'
+import { Cron, CronExpression } from '@nestjs/schedule'
 import { Promise } from 'bluebird'
 import {
   RESTAPIPartialCurrentUserGuild,
@@ -116,8 +116,7 @@ export class BotServersCacheService implements OnApplicationBootstrap {
     return this.servers
   }
 
-  @Cron('*/10 * * * *')
-  async runScheduledTask() {
+  async runCronJob () {
     const { LOGGER } = this
 
     const toRun = async () => {
@@ -156,7 +155,12 @@ export class BotServersCacheService implements OnApplicationBootstrap {
     }
   }
 
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async runScheduledTask() {
+    this.runCronJob()
+  }
+
   onApplicationBootstrap() {
-    this.runScheduledTask()
+    this.runCronJob()
   }
 }
