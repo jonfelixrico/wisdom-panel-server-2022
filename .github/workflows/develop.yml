@@ -53,9 +53,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/jonfelixrico/wisdom-panel-server
+            ghcr.io/${{ github.repository }}
             jonfelixrico/wisdom-panel-server
           tags: |
+            alpha
             alpha-${{ steps.semver_parser.outputs.major }}
             alpha-${{ steps.semver_parser.outputs.major }}.${{ steps.semver_parser.outputs.minor }}
       - name: Build and push to DockerHub
