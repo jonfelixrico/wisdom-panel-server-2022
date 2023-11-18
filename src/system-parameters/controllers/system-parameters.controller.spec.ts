@@ -1,20 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SystemParametersController } from './system-parameters.controller'
+import * as request from 'supertest'
+import { ConfigModule } from '@nestjs/config'
 
 describe('SystemParametersController', () => {
-  let controller: SystemParametersController
+  let module: TestingModule
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       controllers: [SystemParametersController],
+      imports: [ConfigModule.forRoot()],
     }).compile()
-
-    controller = module.get<SystemParametersController>(
-      SystemParametersController,
-    )
   })
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined()
+  it('should contain syspars', async () => {
+    const app = await module.createNestApplication().init()
+    await request(app.getHttpServer())
+      .get('/system-parameters')
+      .expect(
+        expect.objectContaining({
+          // these are from the .env.test file
+
+          discordBotInviteUrl: 'https://discord-bot-invite-url',
+        }),
+      )
   })
 })
