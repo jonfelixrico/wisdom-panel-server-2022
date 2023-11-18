@@ -53,7 +53,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/jonfelixrico/wisdom-panel-server
+            ghcr.io/${{ github.repository }}
             jonfelixrico/wisdom-panel-server
           tags: |
             alpha-${{ steps.semver_parser.outputs.major }}
