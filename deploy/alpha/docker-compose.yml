@@ -17,3 +17,5 @@ services:
     restart: unless-stopped
     ports:
       - 9080:80
+    environment:
+      - API_BASE_URL=http://backend:9085
