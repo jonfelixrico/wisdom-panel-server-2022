@@ -15,7 +15,7 @@ export class SystemParametersController {
   })
   getPublicParameters(): Record<string, string> {
     return {
-      BOT_INVITE_LINK: this.cfg.getOrThrow('BOT_INVITE_LINK'),
+      DISCORD_BOT_INVITE_URL: this.cfg.getOrThrow('DISCORD_BOT_INVITE_URL'),
     }
   }
 }
